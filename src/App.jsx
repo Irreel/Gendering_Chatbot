@@ -1,6 +1,6 @@
+import process from 'process';
+import OpenAI from 'openai';
 import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
 import './App.css'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
@@ -9,13 +9,15 @@ import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { MainContainer, ChatContainer, MessageList, Message, MessageInput, Avatar, TypingIndicator } from '@chatscope/chat-ui-kit-react'
 import ItemSelection from './components/ItemSelection.jsx'
 
-// const apiKey = process.env.OPENAI_API_KEY;
+//Set up OpenAI API
+const openai = new OpenAI({ apiKey: import.meta.env.VITE_OPENAI_API_KEY, dangerouslyAllowBrowser: true }); //TODO
+// const openai = new OpenAI();
 
 function App() {
   const [typing, setTyping] = useState(false);
   const [messages, setMessages] = useState([]);
-
   const [selectedOptions, setSelectedOptions] = useState({});
+  const roleplayMsg = "You are acting as a human and his name is Alen. Now you are providing some suggestions on desert survival game.";
 
   const handleCheckboxChange = (pair, option) => {
     setSelectedOptions(prevOptions => ({
@@ -44,37 +46,43 @@ function App() {
     setTyping(true);
 
     //Calling chatGPT
-    await callChatGPT(newMessage);
+    await callChatGPT(roleplayMsg, newMessages); //TODO
   }
 
-  async function callChatGPT(chatMessages) {
+  async function callChatGPT(sysMessage, chatMessages) {
+    //const sysMessage = "Hello! My name is Alen. I am... [Self introduction] Please select the items and I will provide some advices afterwards";
     //Transform the chatMessages to a legal structure
-    let apiMessages = chatMessages.map((messageObject) => {
-      let role = "";
-      if (messageObject.sender === "user") {
-        role = "user";
-      } else {
-        role = "assistant";
-      }
-      return {
-        role: role,
-        content: messageObject.message
-      }
+    let apiMessages = [
+      {
+        role: 'system',
+        content: sysMessage
+      },
+      ...chatMessages.map((messageObject) => {
+        let role = "";
+        if (messageObject.sender === "user") {
+          role = "user";
+        } else {
+          role = "assistant";
+        }
+        return {
+          role: role,
+          content: messageObject.message
+        };
+      })
+    ];
+
+    const response = await openai.chat.completions.create({
+      messages: apiMessages,
+      model: "gpt-3.5-turbo",
     });
 
-    const response = await fetch('https://api.openai.com/v1/engines/davinci-codex/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${KEY.API_KEY}`
-      },
-      body: JSON.stringify({
-        prompt: message,
-        max_tokens: 150
-      })
-    })
-    const data = await response.json();
-    return data.choices[0].text.trim();
+    //Update messgaes state
+    setMessages([...chatMessages, {
+      message: response.choices[0].message.content,
+      sentTime: 'Just now',
+      sender: 'bot',
+    }]);
+    setTyping(false);
   }
 
 

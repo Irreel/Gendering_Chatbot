@@ -10,4 +10,5 @@ Currently, two official plugins are available:
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
 # Setup
-Please set up `OPENAI_API_KEY` in your environment.
+Please set up `OPENAI_API_KEY` in your environment `.env`:
+`VITE_OPENAI_API_KEY='Your API Key'`
