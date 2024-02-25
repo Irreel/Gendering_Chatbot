@@ -1,77 +1,147 @@
-import React from 'react';
+import React, { useState } from 'react';
 import reactLogo from '../assets/react.svg';
 
-function ItemSelection(props) {
-    
-    const onConfirm = props.onConfirm;
-    // const onConfirm = () => {
-    //     // Handle confirm logic here
-    // };
+const questions = [
+    {
+      id: 'pair1',
+      title: 'Canvas vs. Tarp',
+      options: [
+        {
+          value: 'canvas',
+          description: 'A canvas could be spread out for shade, cool the temperature beneath and be spotted by search parties.',
+        },
+        {
+          value: 'tarp',
+          description: 'A tarp could purify water and be spotted by search parties.',
+        },
+      ],
+    },
+    {
+      id: 'pair2',
+      title: 'Chocolate vs. Water',
+      options: [
+        {
+          value: 'chocolate',
+          description: 'Some chocolates could be used to sustain the energy you need to gather firewood and other materials, preventing fatigue and starvation.',
+        },
+        {
+          value: 'water',
+          description: 'Two quarts of water could be enough to prevent dehydration for a few days.',
+        },
+      ],
+    },
+    {
+      id: 'pair3',
+      title: 'Mirror vs. Compass',
+      options: [
+        {
+          value: 'mirror',
+          description: 'A flat mirror could be used to signal search parties and seen across the horizon in a desert setting.',
+        },
+        {
+          value: 'compass',
+          description: 'A compass could be used to navigate your way to the nearest village, and also reflect sunlight to signal search parties.',
+        },
+      ],
+    },
+    {
+      id: 'pair4',
+      title: 'Flashlight vs. Matches',
+      options: [
+        {
+          value: 'flashlight',
+          description: 'A flashlight could be used at night to signal search parties and help you navigate when moving at night.',
+        },
+        {
+          value: 'matches',
+          description: 'Some matches could be used to start fires and make smokes to signal search parties and provide warmth at night.',
+        },
+      ],
+    },
+    {
+      id: 'pair5',
+      title: 'Knife vs. Pistol',
+      options: [
+        {
+          value: 'knife',
+          description: 'A knife can cut down stakes to build a solar still or to build shelter, and cut down firewood for a fire.',
+        },
+        {
+          value: 'pistol',
+          description: 'A pistol can be good for signaling for help, and provide an alternative noise source if your voice is weak due to dehydration.',
+        },
+      ],
+    },
+    {
+        id: 'pair5',
+        title: 'Done',
+        options: [
+        //   {
+        //     value: 'knife',
+        //     description: 'A knife can cut down stakes to build a solar still or to build shelter, and cut down firewood for a fire.',
+        //   },
+        //   {
+        //     value: 'knife',
+        //     description: 'A knife can cut down stakes to build a solar still or to build shelter, and cut down firewood for a fire.',
+        //   },
+        ],
+      },
+  ];
+  
 
-    return (
-        <div>
-            <h1>Desert Survival Game</h1>
-            <h3>Suppose you are in a desert survival game and need to choose the most essential items for survival from 5 pairs of options.</h3>
-            <div className='CheckboxPairs'>
-                <h3>Pair 1</h3>
-                <div className='CheckboxPair' style={{display: 'flex', justifyContent: 'left'}}>
-                    <input type='radio' name='pair1' value='option1' />
-                    <label htmlFor='option1'>
-                        <b>Canvas</b>
-                        <img src={reactLogo} alt='React Logo' />
-                        <p> A canvas could be spread out for shade, underneath which the temperature could be as much as 20 degrees cooler. It could also be spotted from the air by search parties.</p>
-                    </label>
+function ItemSelection({ onConfirm }) {
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [selectedOptions, setSelectedOptions] = useState({});
 
-                    <input type='radio' name='pair1' value='option2' />
-                    <label htmlFor='option2'>
-                        <b>Tarp</b>
-                        <img src={reactLogo} alt='Vite Logo' />
-                        <p> The tarp could be used to purify water from a contaminated source by building a solar still. Because the tarp is bright blue it could also be used to signal search parties.</p>
-                    </label>
-                </div>
-            </div>.
-            {/* <div className='CheckboxPair' style={{display: 'flex', justifyContent: 'left'}}>
-                    <input type='radio' name='pair2' value='option1' />
-                    <label htmlFor='option1'>
-                        <b>Canvas</b>
-                        <img src={reactLogo} alt='React Logo' />
-                        <p> A canvas could be spread out for shade, underneath which the temperature could be as much as 20 degrees cooler. It could also be spotted from the air by search parties.</p>
-                    </label>
+  const handleOptionChange = (selectedValue) => {
+    const currentQuestionId = questions[currentQuestionIndex].id;
+    setSelectedOptions(prevOptions => ({
+      ...prevOptions,
+      [currentQuestionId]: selectedValue,
+    }));
+  };
 
-                    <input type='radio' name='pair2' value='option2' />
-                    <label htmlFor='option2'>
-                        <b>Tarp</b>
-                        <img src={reactLogo} alt='Vite Logo' />
-                        <p> The tarp could be used to purify water from a contaminated source by building a solar still. Because the tarp is bright blue it could also be used to signal search parties.</p>
-                    </label>
-            </div> */}
-                {/* <div className='CheckboxPair'>
-                    <input type='checkbox' name='pair2' value='option3' />
-                    <label htmlFor='option3'>Option 3</label>
-                    <input type='checkbox' name='pair2' value='option4' />
-                    <label htmlFor='option4'>Option 4</label>
-                </div>
-                <div className='CheckboxPair'>
-                    <input type='checkbox' name='pair3' value='option5' />
-                    <label htmlFor='option5'>Option 5</label>
-                    <input type='checkbox' name='pair3' value='option6' />
-                    <label htmlFor='option6'>Option 6</label>
-                </div>
-                <div className='CheckboxPair'>
-                    <input type='checkbox' name='pair4' value='option7' />
-                    <label htmlFor='option7'>Option 7</label>
-                    <input type='checkbox' name='pair4' value='option8' />
-                    <label htmlFor='option8'>Option 8</label>
-                </div>
-                <div className='CheckboxPair'>
-                    <input type='checkbox' name='pair5' value='option9' />
-                    <label htmlFor='option9'>Option 9</label>
-                    <input type='checkbox' name='pair5' value='option10' />
-                    <label htmlFor='option10'>Option 10</label>
-                </div> */}
-            <button onClick={onConfirm}>Confirm</button>
+  const handleConfirmClick = () => {
+    if (currentQuestionIndex < questions.length - 1) {
+      // Move to the next question
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+    } else {
+      // Last question was answered, call the onConfirm prop with all selected options
+      onConfirm(selectedOptions);
+    }
+  };
+
+  const currentQuestion = questions[currentQuestionIndex];
+
+  return (
+    <div>
+      <h1>Desert Survival Game</h1>
+      <h3>Suppose you are in a desert survival game and need to choose the most essential items for survival.</h3>
+      <div className='CheckboxPairs'>
+        <h3>{currentQuestion.title}</h3>
+        <div className='CheckboxPair' style={{ display: 'flex', justifyContent: 'left' }}>
+          {currentQuestion.options.map((option) => (
+            <div key={option.value}>
+              <input
+                type='radio'
+                name={currentQuestion.id}
+                id={option.value}
+                value={option.value}
+                onChange={(e) => handleOptionChange(e.target.value)}
+                checked={selectedOptions[currentQuestion.id] === option.value}
+              />
+              <label htmlFor={option.value}>
+                <b>{option.value}</b>
+                <img src={reactLogo} alt={option.value} style={{ width: 50, height: 50 }} />
+                <p>{option.description}</p>
+              </label>
+            </div>
+          ))}
         </div>
-    );
+      </div>
+      <button onClick={handleConfirmClick}>Confirm</button>
+    </div>
+  );
 }
 
 export default ItemSelection;
