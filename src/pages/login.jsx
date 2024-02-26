@@ -1,7 +1,8 @@
-import React, { useContext } from "react";
-import { Form, Navigate, useActionData } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { Form, Navigate, redirect, useActionData } from "react-router-dom";
 import { Card, TextField, Button } from "@mui/material";
 import { UserContext } from "../context/UserContext.jsx";
+import { useAuth } from "../context/ProtectedRoutes.jsx";
 
 export async function loginAction({ request }) {
     console.log("loginAction called");
@@ -10,12 +11,9 @@ export async function loginAction({ request }) {
     const name = data.get('name');
     const email = data.get('email');
 
-    console.log(name);
-    console.log(email);
-
     if (email.includes("@")) {
        try {
-
+                //TODO: Data Trigger
                 // // Send post request to server
                 // const response = await fetch('/api/login', {
                 //     method: 'POST',
@@ -40,17 +38,22 @@ export async function loginAction({ request }) {
 export default function Login() {
     const actionData = useActionData();
     const { updateUser } = useContext(UserContext);
+    const [shouldRedirect, setShouldRedirect] = useState(false);
 
-    if (actionData?.user && actionData?.email) {
-        console.log(actionData.user, actionData.email);
-        updateUser(actionData.user, actionData.email);
+    console.log("useAuth: ", useAuth());
 
-        console.log("User updated in login.jsx");
-        console.log(actionData.user, actionData.email);
+    useEffect(() => {
 
+        if (actionData?.name && actionData?.email) {
+            console.log(actionData.name, actionData.email);
+            updateUser(actionData.name, actionData.email);
+            setShouldRedirect(true);
+        }
+      }, [actionData]);
+
+    if (shouldRedirect) {
         return <Navigate to="/game" />;
     }
-
 
     return (
         <Card className="login">

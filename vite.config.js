@@ -26,10 +26,22 @@ export default defineConfig(({ command, mode, isSsrBuild, isPreview }) => {
       build: {
         // generate .vite/manifest.json in outDir
         manifest: true,
-        //   rollupOptions: {
-        //     // overwrite default .html entry
-        //     input: '/src/main.jsx',
-        //   },
+        // rollupOptions: {
+        //   external: [
+        //     "react",
+        //     // "nonid",
+        //     // "polished",
+        //     "react-dom",
+        //     "react-router-dom",
+        //     // "sytled-components",
+        //     // "vite-plugin-svgr",
+        //   ],
+        // },
+
+          // rollupOptions: {
+          //   // overwrite default .html entry
+          //   input: '/src/main.jsx',
+          // },
       },
     }
   }

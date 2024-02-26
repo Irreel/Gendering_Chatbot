@@ -4,11 +4,12 @@ import { UserContext } from "./UserContext.jsx";
 
 export const useAuth = () => {
     const user = useContext(UserContext);
-    return user && user.userEmail && user.userName;
+    return Boolean(user && user.userEmail && user.userName);
 };
 
 const ProtectedRoutes = () => {
     // const location = useLocation();
+    console.log("ProtectedRoutes called");
     const isAuth = useAuth();
     if (!isAuth) {
         return <Navigate to="/" />; // Redirect to the login page
