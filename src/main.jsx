@@ -30,6 +30,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <UserProvider>
       <RouterProvider router={router} />
+      {/* <Game /> */}
     </UserProvider>
   </React.StrictMode>,
 )
