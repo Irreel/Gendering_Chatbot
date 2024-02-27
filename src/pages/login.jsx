@@ -37,7 +37,7 @@ export async function loginAction({ request }) {
 
 export default function Login() {
     const actionData = useActionData();
-    const { updateUser } = useContext(UserContext);
+    const { updateUser, initGameSettings } = useContext(UserContext);
     const [shouldRedirect, setShouldRedirect] = useState(false);
 
     console.log("useAuth: ", useAuth());
@@ -46,6 +46,11 @@ export default function Login() {
 
         if (actionData?.name && actionData?.email) {
             updateUser(actionData.name, actionData.email);
+
+            // Initalize chatbot role and other configs once user is logged in
+            initGameSettings();
+            
+            // Redirect to game page
             setShouldRedirect(true);
         }
       }, [actionData]);

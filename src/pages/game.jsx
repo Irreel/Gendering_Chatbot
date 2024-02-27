@@ -16,14 +16,12 @@ const openai = new OpenAI({ apiKey: import.meta.env.VITE_OPENAI_API_KEY, dangero
 // const openai = new OpenAI();
 
 export default function Game(props) {
-  const user = useContext(UserContext);
+  const { chatbotRole, triggeredPairs } = useContext(UserContext);
   const [typing, setTyping] = useState(false);
   const [messages, setMessages] = useState([]);
 
-  const triggeredPair = randomizeIdxArray();
-
-  //TODO: randomize the chatbot gender
   const roleplayMsg = "You are acting as a human and his name is Alen. Now you are providing some suggestions on desert survival game.";
+  // TODO: const roleplayMsg = chatbotRole.roleplayMsg;
 
   
   const handleSelectedOnePair = (pair_id, option, unselectOption) => {
@@ -122,6 +120,8 @@ export default function Game(props) {
         };
       })
     ];
+
+    const suggestionMsg = "";
 
     // TODO
     // const response = await openai.chat.completions.create({

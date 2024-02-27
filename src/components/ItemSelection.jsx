@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import reactLogo from '../assets/react.svg';
+// import Card from '@mui/material/Card';
 
 const questions = [
     {
@@ -75,16 +76,8 @@ const questions = [
     {
         id: 'pair5',
         title: 'Done',
-        options: [
-        //   {
-        //     value: 'knife',
-        //     description: 'A knife can cut down stakes to build a solar still or to build shelter, and cut down firewood for a fire.',
-        //   },
-        //   {
-        //     value: 'knife',
-        //     description: 'A knife can cut down stakes to build a solar still or to build shelter, and cut down firewood for a fire.',
-        //   },
-        ],
+        // options: [
+        // ],
       },
   ];
   

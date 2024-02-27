@@ -9,5 +9,8 @@ export default function randomizeGender () {
 
    const randomNumber = Math.floor(Math.random() * 3) + 1;
     
-    return {roleplayMsg: "I am a ${randomNumber"}
+    return {
+        gender: "male",
+        roleplayMsg: "" //rolePlayPrompts[0]
+    }
 };
