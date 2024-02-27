@@ -1,33 +1,48 @@
-import OpenAI from 'openai';
-import { useState } from 'react'
 import '../App.css'
+import OpenAI from 'openai';
+import { useState, useContext } from 'react'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
-import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
+import { Navigate } from 'react-router-dom';
+import { UserContext } from '../context/UserContext.jsx';
 
-import { MainContainer, ChatContainer, MessageList, Message, MessageInput, Avatar, TypingIndicator } from '@chatscope/chat-ui-kit-react'
 import ItemSelection from '../components/ItemSelection.jsx'
+import randomizeIdxArray from '../utils/which2Suggest.jsx';
+import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
+import { MainContainer, ChatContainer, MessageList, Message, MessageInput, Avatar, TypingIndicator } from '@chatscope/chat-ui-kit-react'
 
 //Set up OpenAI API
 const openai = new OpenAI({ apiKey: import.meta.env.VITE_OPENAI_API_KEY, dangerouslyAllowBrowser: true }); //TODO
 // const openai = new OpenAI();
 
-export default function Game() {
+export default function Game(props) {
+  const user = useContext(UserContext);
   const [typing, setTyping] = useState(false);
   const [messages, setMessages] = useState([]);
-  const [selectedOptions, setSelectedOptions] = useState({});
+
+  const triggeredPair = randomizeIdxArray();
+
+  //TODO: randomize the chatbot gender
   const roleplayMsg = "You are acting as a human and his name is Alen. Now you are providing some suggestions on desert survival game.";
 
-  const handleCheckboxChange = (pair, option) => {
-    setSelectedOptions(prevOptions => ({
-      ...prevOptions,
-      [pair]: option
-    }))
+  
+  const handleSelectedOnePair = (pair_id, option, unselectOption) => {
+    console.log("handleSelectedOnePair is called!");
+    if (triggeredPair[pair_id]) {
+      triggerGPTSuggestions(roleplayMsg, messages, unselectOption);
+    }
   }
 
-  const handleConfirm = () => {
+  const handleSelectedComplete = (selectedOptions) => {
     // Do something with the selected options
     console.log(selectedOptions)
+    user.completeGame();
+
+    //TODO: Post results to server - Data Trigger
+    //
+
+    return <Navigate to="/post-test" />
+
   }
 
   const handleSend = async (message) => {
@@ -45,10 +60,10 @@ export default function Game() {
     setTyping(true);
 
     //Calling chatGPT
-    await callChatGPT(roleplayMsg, newMessages); //TODO
+    await callGPT(roleplayMsg, newMessages); //TODO
   }
 
-  async function callChatGPT(sysMessage, chatMessages) {
+  async function callGPT(sysMessage, chatMessages) {
     //const sysMessage = "Hello! My name is Alen. I am... [Self introduction] Please select the items and I will provide some advices afterwards";
     //Transform the chatMessages to a legal structure
     let apiMessages = [
@@ -84,12 +99,59 @@ export default function Game() {
     setTyping(false);
   }
 
+  async function triggerGPTSuggestions(sysMessage, chatMessages, userOption) {
+
+    // TODO: trigger GPT-3.5 to provide suggestions
+
+    //Transform the chatMessages to a legal structure
+    let apiMessages = [
+      {
+        role: 'system',
+        content: sysMessage
+      },
+      ...chatMessages.map((messageObject) => {
+        let role = "";
+        if (messageObject.sender === "user") {
+          role = "user";
+        } else {
+          role = "assistant";
+        }
+        return {
+          role: role,
+          content: messageObject.message
+        };
+      })
+    ];
+
+    // TODO
+    // const response = await openai.chat.completions.create({
+    //   messages: apiMessages,
+    //   model: "gpt-3.5-turbo",
+    //   max_tokens: 100,
+    //   temperature: 0.5,
+    //   top_p: 1,
+    //   frequency_penalty: 0,
+    //   presence_penalty: 0,
+    //   stop: userOption,
+    // });
+
+    //Update messgaes state
+    setMessages([...chatMessages, {
+      message: response.choices[0].message.content,
+      message: "[Just trigger the GPT-3.5 to provide suggestions]",
+      sentTime: 'Just now',
+      sender: 'bot',
+    }]);
+    
+    setTyping(false);
+  }
+
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 8 }}>
           <Grid item xs={5}>
-              <ItemSelection onConfirm={handleConfirm} />         
+              <ItemSelection onConfirm={handleSelectedComplete} onPairConfirm={handleSelectedOnePair}/>         
           </Grid>
           <Grid item xs={7}>
             <MainContainer>

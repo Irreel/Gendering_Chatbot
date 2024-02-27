@@ -12,3 +12,10 @@ Currently, two official plugins are available:
 # Setup
 Please set up `OPENAI_API_KEY` in your environment `.env`:
 `VITE_OPENAI_API_KEY='Your API Key'`
+Add `.env` in `.gitignore` if you don't want to share your API key.
+
+# Folder Structure
+Main pages are saved in `src/pages`
+
+# Reference
+[Material Design](https://mui.com/material-ui/getting-started/)
