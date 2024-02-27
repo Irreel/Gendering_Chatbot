@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Form, Navigate, useActionData } from "react-router-dom";
-import { Card, TextField, Button } from "@mui/material";
+import { Card, TextField, Button, CardContent } from "@mui/material";
 import { UserContext } from "../context/UserContext.jsx";
 import { useAuth } from "../context/ProtectedRoutes.jsx";
 
@@ -56,9 +56,10 @@ export default function Login() {
 
     return (
         <Card className="login">
+            <CardContent>
             <h3>Login</h3>
             <h5>Enter your email and name</h5>
-            <h5>Please make sure they are the same as your response in <a href="#">our Google Form</a> </h5> 
+            <h5>Please make sure they are the same as your response in <a href="https://forms.gle/5JNW1bdsGJmHFRgx6">our Google Form</a> </h5> 
             
             <Form className="auth-container" method="post" action={loginAction}>
                 {actionData?.error && <p>{error}</p>}
@@ -80,6 +81,7 @@ export default function Login() {
                 <br/>
                 <Button type="submit" variant="contained">Confirm</Button> 
             </Form>
+            </CardContent>
         </Card>
     );
 }
