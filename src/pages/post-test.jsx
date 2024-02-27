@@ -49,6 +49,7 @@ class Post extends Component {
                 <RadioGroup
                   aria-label={`question-${index + 1}`}
                   name={`q${index + 1}`}
+                  value={this.state.responses[`q${index + 1}`]}
                   onChange={(event) => this.handleResponseChange(`q${index + 1}`, event.target.value)}
                 >
                   {['Totally Disagree', 'Disagree', 'Neutral', 'Agree', 'Totally Agree'].map((label, value) => (
