@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider, BrowserRouter } from 'react-router-dom' // Added import statement for BrowserRouter
 import { UserProvider } from './context/UserContext.jsx'
 import Login, { loginAction } from './pages/login.jsx'
 import ProtectedRoutes from './context/ProtectedRoutes.jsx'
@@ -11,26 +11,30 @@ import End from './pages/end.jsx'
 import './index.css'
 
 const router = createBrowserRouter([
-  { 
-    path: '/', 
-    element: <Login />,
-    action: loginAction,
-  },
-  {
-    element: <ProtectedRoutes />,
-    children: [
-      { path: '/game', element: <Game /> },
+  // {
+  //   path: '/',
+  //   element: <ProtectedRoutes />,
+  //   children: [
+      { 
+        path: '/login', 
+        element: <Login />,
+        action: loginAction,
+      },
+      { 
+        path: '/game', 
+        element: <Game />,
+        loader: async () => {return null}, // TODO: provide user information
+      },
       { path: '/post-test', element: <Post /> },
       { path: '/end', element: <End /> },
-    ],
-  }
-])
+  //   ],
+  // },
+]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <UserProvider>
       <RouterProvider router={router} />
-      {/* <Game /> */}
     </UserProvider>
   </React.StrictMode>,
-)
+);

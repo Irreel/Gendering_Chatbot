@@ -9,10 +9,9 @@ export const useAuth = () => {
 
 const ProtectedRoutes = () => {
     // const location = useLocation();
-    console.log("ProtectedRoutes called");
     const isAuth = useAuth();
     if (!isAuth) {
-        return <Navigate to="/" />; // Redirect to the login page
+        return <Navigate to="/login" replace />; // Redirect to the login page
     }
     else {
 
@@ -29,9 +28,9 @@ const ProtectedRoutes = () => {
         }
         else {
             alert("Error: user data is not correct at ProtectedRoutes.jsx. Please contact the administrator.");
+            return <Outlet />;
         }
     }
-    return <Outlet />; // Render the child routes
 };
 
 export default ProtectedRoutes;

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Form, Navigate, redirect, useActionData } from "react-router-dom";
+import { Form, Navigate, useActionData } from "react-router-dom";
 import { Card, TextField, Button } from "@mui/material";
 import { UserContext } from "../context/UserContext.jsx";
 import { useAuth } from "../context/ProtectedRoutes.jsx";
@@ -45,14 +45,13 @@ export default function Login() {
     useEffect(() => {
 
         if (actionData?.name && actionData?.email) {
-            console.log(actionData.name, actionData.email);
             updateUser(actionData.name, actionData.email);
             setShouldRedirect(true);
         }
       }, [actionData]);
 
     if (shouldRedirect) {
-        return <Navigate to="/game" />;
+        return <Navigate to="/game" replace/>;
     }
 
     return (

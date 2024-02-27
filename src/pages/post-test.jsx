@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Form } from "react-router-dom";
 
 function Post() {
     // const [name, setName] = useState("");
@@ -10,7 +10,7 @@ function Post() {
             <h3>Post-test Survey</h3>
             {/* <h5>Please fill out this post test survey </h5>  */}
             
-            <div className="survey">
+            <Form className="survey">
 
                 <input
                 placeholder="Email"
@@ -30,7 +30,7 @@ function Post() {
                     <button type="submit">Submit</button>
                 </Link>
 
-            </div>
+            </Form>
 
         </div>
     );
