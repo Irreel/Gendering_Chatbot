@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Form } from "react-router-dom";
 
 class Post extends Component {
   constructor(props) {
@@ -45,7 +45,7 @@ class Post extends Component {
     return (
       <div>
         <h3>Post-test Survey</h3>
-        <div className="survey">
+        <Form className="survey">
           <input
             placeholder="Email"
             type="text"
@@ -80,7 +80,8 @@ class Post extends Component {
           <Link to={`/end`}>
             <button type="submit">Submit</button>
           </Link>
-        </div>
+
+        </Form>
       </div>
     );
   }

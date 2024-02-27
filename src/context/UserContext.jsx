@@ -39,6 +39,16 @@ export const UserProvider = ({ children }) => {
     completePostTest,
   };
 
+  // const value = {
+  //   userName: "test",
+  //   userEmail: "test@uw.edu",
+  //   updateUser,
+  //   userCompletedGame,
+  //   completeGame,
+  //   userCompletedPostTest,
+  //   completePostTest,
+  // };
+
   // Render the UserProvider with the value object
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };

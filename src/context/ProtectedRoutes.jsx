@@ -4,14 +4,14 @@ import { UserContext } from "./UserContext.jsx";
 
 export const useAuth = () => {
     const user = useContext(UserContext);
-    return user && user.userEmail && user.userName;
+    return Boolean(user && user.userEmail && user.userName);
 };
 
 const ProtectedRoutes = () => {
     // const location = useLocation();
     const isAuth = useAuth();
     if (!isAuth) {
-        return <Navigate to="/" />; // Redirect to the login page
+        return <Navigate to="/login" replace />; // Redirect to the login page
     }
     else {
 
@@ -28,9 +28,9 @@ const ProtectedRoutes = () => {
         }
         else {
             alert("Error: user data is not correct at ProtectedRoutes.jsx. Please contact the administrator.");
+            return <Outlet />;
         }
     }
-    return <Outlet />; // Render the child routes
 };
 
 export default ProtectedRoutes;

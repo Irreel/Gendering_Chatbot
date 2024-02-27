@@ -12,7 +12,7 @@ import ItemSelection from '../components/ItemSelection.jsx'
 const openai = new OpenAI({ apiKey: import.meta.env.VITE_OPENAI_API_KEY, dangerouslyAllowBrowser: true }); //TODO
 // const openai = new OpenAI();
 
-function Game() {
+export default function Game() {
   const [typing, setTyping] = useState(false);
   const [messages, setMessages] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState({});
@@ -84,7 +84,6 @@ function Game() {
     setTyping(false);
   }
 
-
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
@@ -115,6 +114,4 @@ function Game() {
       </Box>
     </>
   )
-}
-
-export default Game;
+};
