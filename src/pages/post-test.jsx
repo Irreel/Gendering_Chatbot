@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { Link, Form } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { Card, CardContent, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, Button, Typography, Box } from '@mui/material';
 
 class Post extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: '',
-      name: '',
       responses: {
         q1: '',
         q2: '',
@@ -17,11 +16,6 @@ class Post extends Component {
       },
     };
   }
-
-  handleInputChange = (event) => {
-    const { name, value } = event.target;
-    this.setState({ [name]: value });
-  };
 
   handleResponseChange = (question, value) => {
     this.setState(prevState => ({
@@ -43,46 +37,34 @@ class Post extends Component {
     ];
 
     return (
-      <div>
-        <h3>Post-test Survey</h3>
-        <Form className="survey">
-          <input
-            placeholder="Email"
-            type="text"
-            name="email"
-            onChange={this.handleInputChange}
-          />
-          <br />
-          <input
-            placeholder="Name"
-            type="text"
-            name="name"
-            onChange={this.handleInputChange}
-          />
-          <br />
-          {questions.map((question, index) => (
-            <div key={index}>
-              <p>{question}</p>
-              {[1, 2, 3, 4, 5].map(value => (
-                <label key={value}>
-                  <input
-                    type="radio"
-                    name={`q${index + 1}`}
-                    value={value}
-                    onChange={() => this.handleResponseChange(`q${index + 1}`, value)}
-                  />
-                  {value}. {['Totally Disagree', 'Disagree', 'Neutral', 'Agree', 'Totally Agree'][value - 1]}
-                </label>
-              ))}
-              <br />
-            </div>
-          ))}
-          <Link to={`/end`}>
-            <button type="submit">Submit</button>
-          </Link>
-
-        </Form>
-      </div>
+      <Box sx={{ margin: '20px', maxWidth: '1200px', padding:'20px' }}> {/* Adjust the maxWidth as needed */}
+        <Typography variant="h3" component="h3" gutterBottom>
+          Post-test Survey
+        </Typography>
+        {questions.map((question, index) => (
+          <Card key={index} sx={{ margin: '10px 0' , padding:'20px 30px'}}>
+            <CardContent>
+              <FormControl component="fieldset" sx={{ width: '100%' }}> {/* Ensure FormControl takes the full width */}
+                <FormLabel component="legend" sx={{ wordWrap: 'break-word' }}>{question}</FormLabel>
+                <RadioGroup
+                  aria-label={`question-${index + 1}`}
+                  name={`q${index + 1}`}
+                  onChange={(event) => this.handleResponseChange(`q${index + 1}`, event.target.value)}
+                >
+                  {['Totally Disagree', 'Disagree', 'Neutral', 'Agree', 'Totally Agree'].map((label, value) => (
+                    <FormControlLabel key={value} value={String(value + 1)} control={<Radio />} label={label} />
+                  ))}
+                </RadioGroup>
+              </FormControl>
+            </CardContent>
+          </Card>
+        ))}
+        <Link to={`/end`} style={{ textDecoration: 'none', marginTop: '20px', display: 'block' }}>
+          <Button variant="contained" color="primary" type="submit">
+            Submit
+          </Button>
+        </Link>
+      </Box>
     );
   }
 }
