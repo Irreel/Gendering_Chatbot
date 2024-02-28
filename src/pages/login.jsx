@@ -7,7 +7,7 @@ import { Card, CardContent, TextField, Button, Paper, Typography, Box} from "@mu
 import { UserContext } from "../context/UserContext.jsx";
 import { useAuth } from "../context/ProtectedRoutes.jsx";
 
-const SERVER = import.meta.env.SERVER;
+const SERVER = import.meta.env.VITE_SERVER;
 
 export async function loginAction({ request }) {
     console.log("loginAction called");
@@ -23,15 +23,16 @@ export async function loginAction({ request }) {
                 const response = await fetch(SERVER+'/api/login', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
                     },
                     body: JSON.stringify({ 'name': name, 'email': email, 'timestamp': timestamp }) 
                 });
+                console.log("Login succeed")
                 return { name: name, email: email, error: null };
 
        } catch (error) {
-           console.error("Error:", error);
-           return { name: null, email: null, error: "Error: " + error};
+           return { name: null, email: null, error: "Error"};
        }    
 
     } else {
@@ -45,7 +46,7 @@ export default function Login() {
     const { updateUser, initGameSettings } = useContext(UserContext);
     const [shouldRedirect, setShouldRedirect] = useState(false);
 
-    console.log("useAuth: ", useAuth());
+    // console.log("useAuth: ", useAuth());
 
     useEffect(() => {
 
@@ -71,8 +72,11 @@ export default function Login() {
             <Typography variant="h6" gutterBottom>Enter your email and name</Typography>
             <Typography variant="subtitle2" gutterBottom>Please make sure they are the same as your response in <a href="https://forms.gle/5JNW1bdsGJmHFRgx6">our Google Form</a> </Typography> 
             
-            <Box component="form" noValidate autoComplete="off" onSubmit={loginAction} sx={{ mt: 2 }}>
-                {actionData?.error && <p>{error}</p>}
+
+            <Form className="auth-container" method="post" action={loginAction}>
+              <Box component="form" noValidate autoComplete="off" sx={{ mt: 2 }}>
+                {actionData?.error && <p>{actionData.error}</p>}
+
                 <TextField
                     name="email"
                     label="Email"
@@ -93,6 +97,7 @@ export default function Login() {
 
                 <Button type="submit" variant="contained" sx={{ mt: 4 }}>Confirm</Button> 
             </Box>
+          </Form>
         </Paper>
 
     );

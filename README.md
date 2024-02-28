@@ -13,7 +13,7 @@ Currently, two official plugins are available:
 Please set up `OPENAI_API_KEY` in your environment `.env`:
 `VITE_OPENAI_API_KEY='Your API Key'`
 Add `.env` in `.gitignore` if you don't want to share your API key.
-`SERVER='Backend Server URL'`
+`VITE_SERVER='Backend Server URL'`
 
 # Folder Structure
 Main pages are saved in `src/pages`
