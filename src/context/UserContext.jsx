@@ -30,7 +30,6 @@ export const UserProvider = ({ children }) => {
     if (!userCompletedGame) {
       setChatbotRole(randomizeGender());
       setTriggeredPairs(randomizeIdxArray());
-      console.log("Game settings initialized!")
       console.log("triggeredPair: ", triggeredPairs);
     }
     else alert("You have already completed the game!");

@@ -4,7 +4,7 @@ import { Card, TextField, Button, CardContent } from "@mui/material";
 import { UserContext } from "../context/UserContext.jsx";
 import { useAuth } from "../context/ProtectedRoutes.jsx";
 
-const SERVER = import.meta.env.SERVER;
+const SERVER = import.meta.env.VITE_SERVER;
 
 export async function loginAction({ request }) {
     console.log("loginAction called");
@@ -20,15 +20,16 @@ export async function loginAction({ request }) {
                 const response = await fetch(SERVER+'/api/login', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
                     },
                     body: JSON.stringify({ 'name': name, 'email': email, 'timestamp': timestamp }) 
                 });
+                console.log("Login succeed")
                 return { name: name, email: email, error: null };
 
        } catch (error) {
-           console.error("Error:", error);
-           return { name: null, email: null, error: "Error: " + error};
+           return { name: null, email: null, error: "Error"};
        }    
 
     } else {
@@ -42,7 +43,7 @@ export default function Login() {
     const { updateUser, initGameSettings } = useContext(UserContext);
     const [shouldRedirect, setShouldRedirect] = useState(false);
 
-    console.log("useAuth: ", useAuth());
+    // console.log("useAuth: ", useAuth());
 
     useEffect(() => {
 
@@ -69,7 +70,7 @@ export default function Login() {
             <h5>Please make sure they are the same as your response in <a href="https://forms.gle/5JNW1bdsGJmHFRgx6">our Google Form</a> </h5> 
             
             <Form className="auth-container" method="post" action={loginAction}>
-                {actionData?.error && <p>{error}</p>}
+                {actionData?.error && <p>{actionData.error}</p>}
                 <TextField
                     name="email"
                     label="Email"
