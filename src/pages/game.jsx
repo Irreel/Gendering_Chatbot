@@ -135,7 +135,7 @@ export default function Game(props) {
 
     //Update messgaes state
     setMessages([...chatMessages, {
-      message: response.choices[0].message.content,
+      // message: response.choices[0].message.content,
       message: "[Just trigger the GPT-3.5 to provide suggestions]",
       sentTime: 'Just now',
       sender: 'bot',
