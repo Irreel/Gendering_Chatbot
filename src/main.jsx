@@ -5,7 +5,7 @@ import { UserProvider } from './context/UserContext.jsx'
 import Login, { loginAction } from './pages/login.jsx'
 import ProtectedRoutes from './context/ProtectedRoutes.jsx'
 import Game from './pages/game.jsx'
-import Post from './pages/post-test.jsx'
+import Post, {postTestAction} from './pages/post-test.jsx'
 import End from './pages/end.jsx'
 
 import './index.css'
@@ -16,7 +16,7 @@ const router = createBrowserRouter([
   //   element: <ProtectedRoutes />,
   //   children: [
       { 
-        path: '/login', 
+        path: '/', 
         element: <Login />,
         action: loginAction,
       },
@@ -25,7 +25,11 @@ const router = createBrowserRouter([
         element: <Game />,
         loader: async () => {return null}, // TODO: provide user information
       },
-      { path: '/post-test', element: <Post /> },
+      { 
+        path: '/post-test', 
+        element: <Post />,
+        action: postTestAction, 
+      },
       { path: '/end', element: <End /> },
   //   ],
   // },

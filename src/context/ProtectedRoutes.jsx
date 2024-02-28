@@ -11,7 +11,7 @@ const ProtectedRoutes = () => {
     // const location = useLocation();
     const isAuth = useAuth();
     if (!isAuth) {
-        return <Navigate to="/login" replace />; // Redirect to the login page
+        return <Navigate to="/" replace />; // Redirect to the login page
     }
     else {
 
