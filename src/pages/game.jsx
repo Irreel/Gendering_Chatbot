@@ -14,7 +14,7 @@ import { MainContainer, ChatContainer, MessageList, Message, MessageInput, Avata
 const openai = new OpenAI({ apiKey: import.meta.env.VITE_OPENAI_API_KEY, dangerouslyAllowBrowser: true }); //TODO
 
 export default function Game(props) {
-  const { chatbotRole, triggeredPairs } = useContext(UserContext);
+  const { completeGame, chatbotRole, triggeredPairs } = useContext(UserContext);
   const [typing, setTyping] = useState(false);
   const [messages, setMessages] = useState([]);
 
@@ -25,17 +25,17 @@ export default function Game(props) {
 
 
   
-  const handleSelectedOnePair = (pair_id, option, unselectOption) => {
+  const handleSelectedOnePair = (pair_id, unselectOption) => {
     console.log("handleSelectedOnePair is called!");
-    if (triggeredPair[pair_id]) {
+    if (triggeredPairs[pair_id]) {
       triggerGPTSuggestions(roleplayMsg, messages, unselectOption);
     }
   }
 
   const handleSelectedComplete = (selectedOptions) => {
     // Do something with the selected options
-    console.log(selectedOptions)
-    user.completeGame();
+    console.log("selected options", selectedOptions)
+    completeGame();
 
     //TODO: Post results to server - Data Trigger
     //
