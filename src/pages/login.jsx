@@ -4,6 +4,8 @@ import { Card, TextField, Button, CardContent } from "@mui/material";
 import { UserContext } from "../context/UserContext.jsx";
 import { useAuth } from "../context/ProtectedRoutes.jsx";
 
+const SERVER = import.meta.env.SERVER;
+
 export async function loginAction({ request }) {
     console.log("loginAction called");
 
@@ -12,16 +14,16 @@ export async function loginAction({ request }) {
     const email = data.get('email');
 
     if (email.includes("@")) {
-       try {
-                //TODO: Data Trigger
-                // // Send post request to server
-                // const response = await fetch('/api/login', {
-                //     method: 'POST',
-                //     headers: {
-                //         'Content-Type': 'application/json'
-                //     },
-                //     body: JSON.stringify({ name, email })
-                // });
+        const timestamp = new Date().toISOString();
+        try {
+                // Send post request to server
+                const response = await fetch(SERVER+'/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 'name': name, 'email': email, 'timestamp': timestamp }) 
+                });
                 return { name: name, email: email, error: null };
 
        } catch (error) {
