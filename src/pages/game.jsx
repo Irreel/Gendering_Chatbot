@@ -87,11 +87,11 @@ export default function Game() {
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
-        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 8 }}>
-          <Grid item xs={5}>
+        <Grid container spacing={2}>
+          <Grid item md={8} xs={12}>
               <ItemSelection onConfirm={handleConfirm} />         
           </Grid>
-          <Grid item xs={7}>
+          <Grid item md={4} xs={12}>
             <MainContainer>
               <ChatContainer>
                 <MessageList typingIndicator={typing? <TypingIndicator content="The other one is typing..."/> : null}>

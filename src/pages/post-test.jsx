@@ -44,7 +44,7 @@ class Post extends Component {
         {questions.map((question, index) => (
           <Card key={index} sx={{ margin: '10px 0' , padding:'20px 30px'}}>
             <CardContent>
-              <FormControl component="fieldset" sx={{ width: '100%' }}> {/* Ensure FormControl takes the full width */}
+              <FormControl component="fieldset" sx={{ width: '100%' }}>
                 <FormLabel component="legend" sx={{ wordWrap: 'break-word' }}>{question}</FormLabel>
                 <RadioGroup
                   aria-label={`question-${index + 1}`}

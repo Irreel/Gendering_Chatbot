@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import reactLogo from '../assets/react.svg';
+import { Box, Grid, Paper, Radio, RadioGroup, FormControlLabel, Typography, Button, Card } from '@mui/material';
 
 const questions = [
     {
@@ -7,11 +8,11 @@ const questions = [
       title: 'Canvas vs. Tarp',
       options: [
         {
-          value: 'canvas',
+          value: 'Canvas',
           description: 'A canvas could be spread out for shade, cool the temperature beneath and be spotted by search parties.',
         },
         {
-          value: 'tarp',
+          value: 'Tarp',
           description: 'A tarp could purify water and be spotted by search parties.',
         },
       ],
@@ -21,11 +22,11 @@ const questions = [
       title: 'Chocolate vs. Water',
       options: [
         {
-          value: 'chocolate',
+          value: 'Chocolate',
           description: 'Some chocolates could be used to sustain the energy you need to gather firewood and other materials, preventing fatigue and starvation.',
         },
         {
-          value: 'water',
+          value: 'Water',
           description: 'Two quarts of water could be enough to prevent dehydration for a few days.',
         },
       ],
@@ -35,11 +36,11 @@ const questions = [
       title: 'Mirror vs. Compass',
       options: [
         {
-          value: 'mirror',
+          value: 'Mirror',
           description: 'A flat mirror could be used to signal search parties and seen across the horizon in a desert setting.',
         },
         {
-          value: 'compass',
+          value: 'Compass',
           description: 'A compass could be used to navigate your way to the nearest village, and also reflect sunlight to signal search parties.',
         },
       ],
@@ -49,11 +50,11 @@ const questions = [
       title: 'Flashlight vs. Matches',
       options: [
         {
-          value: 'flashlight',
+          value: 'Flashlight',
           description: 'A flashlight could be used at night to signal search parties and help you navigate when moving at night.',
         },
         {
-          value: 'matches',
+          value: 'Matches',
           description: 'Some matches could be used to start fires and make smokes to signal search parties and provide warmth at night.',
         },
       ],
@@ -63,11 +64,11 @@ const questions = [
       title: 'Knife vs. Pistol',
       options: [
         {
-          value: 'knife',
+          value: 'Knife',
           description: 'A knife can cut down stakes to build a solar still or to build shelter, and cut down firewood for a fire.',
         },
         {
-          value: 'pistol',
+          value: 'Pistol',
           description: 'A pistol can be good for signaling for help, and provide an alternative noise source if your voice is weak due to dehydration.',
         },
       ],
@@ -114,34 +115,46 @@ function ItemSelection({ onConfirm }) {
   const currentQuestion = questions[currentQuestionIndex];
 
   return (
-    <div>
-      <h1>Desert Survival Game</h1>
-      <h3>Suppose you are in a desert survival game and need to choose the most essential items for survival.</h3>
-      <div className='CheckboxPairs'>
-        <h3>{currentQuestion.title}</h3>
-        <div className='CheckboxPair' style={{ display: 'flex', justifyContent: 'left' }}>
-          {currentQuestion.options.map((option) => (
-            <div key={option.value}>
-              <input
-                type='radio'
-                name={currentQuestion.id}
-                id={option.value}
-                value={option.value}
-                onChange={(e) => handleOptionChange(e.target.value)}
-                checked={selectedOptions[currentQuestion.id] === option.value}
-              />
-              <label htmlFor={option.value}>
-                <b>{option.value}</b>
-                <img src={reactLogo} alt={option.value} style={{ width: 50, height: 50 }} />
-                <p>{option.description}</p>
-              </label>
-            </div>
-          ))}
-        </div>
-      </div>
-      <button onClick={handleConfirmClick}>Confirm</button>
-    </div>
+    <Card variant="outlined" sx={{ m: 2, padding: 6 }}>
+      <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', mb: 3 }}>
+        Desert Survival Game
+      </Typography>
+      <Typography variant="body1" align="left" gutterBottom>
+        Suppose you are in a desert survival game and need to choose the most essential items for survival. Here are the given items in pairs, choose one from the pair below:
+      </Typography>
+      <Typography variant="h6" gutterBottom sx={{ m: 3, fontWeight: 'bold'}}>
+        {currentQuestion.title}
+      </Typography>
+      <RadioGroup
+        name={currentQuestion.id}
+        value={selectedOptions[currentQuestion.id] || ''}
+        onChange={(e) => handleOptionChange(e.target.value)}
+      >
+        {currentQuestion.options.map((option) => (
+          <FormControlLabel
+            key={option.value}
+            value={option.value}
+            control={<Radio />}
+            label={
+              <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', ml: 1, mb: 1}}>
+                <Typography variant="subtitle1" sx={{width: '100px', fontWeight: 'bold'}} align="left">
+                  {option.value}
+                </Typography>
+                <Typography variant="body1" align="left" sx={{ flex: 1 }}>
+                  {option.description}
+                </Typography>
+              </Box>
+            }
+            sx={{ alignItems: 'center', m: 1 }}
+          />
+        ))}
+      </RadioGroup>
+      <Button variant="contained" onClick={handleConfirmClick} sx={{ mt: 2 }}>
+        Confirm
+      </Button>
+    </Card>
   );
 }
+
 
 export default ItemSelection;
