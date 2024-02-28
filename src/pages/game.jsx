@@ -7,13 +7,11 @@ import { Navigate } from 'react-router-dom';
 import { UserContext } from '../context/UserContext.jsx';
 
 import ItemSelection from '../components/ItemSelection.jsx'
-import randomizeIdxArray from '../utils/which2Suggest.jsx';
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { MainContainer, ChatContainer, MessageList, Message, MessageInput, Avatar, TypingIndicator } from '@chatscope/chat-ui-kit-react'
 
 //Set up OpenAI API
 const openai = new OpenAI({ apiKey: import.meta.env.VITE_OPENAI_API_KEY, dangerouslyAllowBrowser: true }); //TODO
-// const openai = new OpenAI();
 
 export default function Game(props) {
   const { chatbotRole, triggeredPairs } = useContext(UserContext);

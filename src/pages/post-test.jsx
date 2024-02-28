@@ -1,6 +1,33 @@
 import React, { Component } from 'react';
 import { Link, Form } from "react-router-dom";
 
+export async function postTestAction({ request }) {
+  console.log("postTestAction called");
+
+  const data = await request.formData();
+  const formData = {
+      email: data.get('email'),
+      name: data.get('name'),
+      q1: data.get('q1'),
+      q2: data.get('q2'),
+      q3: data.get('q3'),
+      q4: data.get('q4'),
+      q5: data.get('q5'),
+      q6: data.get('q6'),
+    };
+
+  const jsonData = JSON.stringify(formData);
+
+  // Send jsonData to the server 
+  const response = await fetch('/api/post-test', { //TODO
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: jsonData,
+  });
+}
+
 class Post extends Component {
   constructor(props) {
     super(props);
