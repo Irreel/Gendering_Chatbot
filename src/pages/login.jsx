@@ -1,8 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Form, Navigate, useActionData } from "react-router-dom";
-import { TextField, Button, Paper, Typography, Box} from "@mui/material";
+
+import { Card, CardContent, TextField, Button, Paper, Typography, Box} from "@mui/material";
+
+
 import { UserContext } from "../context/UserContext.jsx";
 import { useAuth } from "../context/ProtectedRoutes.jsx";
+
+const SERVER = import.meta.env.SERVER;
 
 export async function loginAction({ request }) {
     console.log("loginAction called");
@@ -12,16 +17,16 @@ export async function loginAction({ request }) {
     const email = data.get('email');
 
     if (email.includes("@")) {
-       try {
-                //TODO: Data Trigger
-                // // Send post request to server
-                // const response = await fetch('/api/login', {
-                //     method: 'POST',
-                //     headers: {
-                //         'Content-Type': 'application/json'
-                //     },
-                //     body: JSON.stringify({ name, email })
-                // });
+        const timestamp = new Date().toISOString();
+        try {
+                // Send post request to server
+                const response = await fetch(SERVER+'/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 'name': name, 'email': email, 'timestamp': timestamp }) 
+                });
                 return { name: name, email: email, error: null };
 
        } catch (error) {
@@ -37,7 +42,7 @@ export async function loginAction({ request }) {
 
 export default function Login() {
     const actionData = useActionData();
-    const { updateUser } = useContext(UserContext);
+    const { updateUser, initGameSettings } = useContext(UserContext);
     const [shouldRedirect, setShouldRedirect] = useState(false);
 
     console.log("useAuth: ", useAuth());
@@ -46,6 +51,11 @@ export default function Login() {
 
         if (actionData?.name && actionData?.email) {
             updateUser(actionData.name, actionData.email);
+
+            // Initalize chatbot role and other configs once user is logged in
+            initGameSettings();
+            
+            // Redirect to game page
             setShouldRedirect(true);
         }
       }, [actionData]);
@@ -55,10 +65,11 @@ export default function Login() {
     }
 
     return (
-        <Paper elevation={6} sx={{ padding: 3, maxWidth: 400, margin: "auto" }}>
+
+        <Paper elevation={6} sx={{ padding: 3, maxWidth: 400, margin: "auto" }} className="login">
             <Typography variant="h4" component="h3" gutterBottom sx={{ fontWeight: 'bold' }}>Login</Typography>
             <Typography variant="h6" gutterBottom>Enter your email and name</Typography>
-            <Typography variant="subtitle2" gutterBottom>Please make sure they are the same as your response in <a href="#">our Google Form</a> </Typography> 
+            <Typography variant="subtitle2" gutterBottom>Please make sure they are the same as your response in <a href="https://forms.gle/5JNW1bdsGJmHFRgx6">our Google Form</a> </Typography> 
             
             <Box component="form" noValidate autoComplete="off" onSubmit={loginAction} sx={{ mt: 2 }}>
                 {actionData?.error && <p>{error}</p>}
@@ -79,8 +90,10 @@ export default function Login() {
                     sx={{ mt: 2 }}
                 />
                 <br/>
+
                 <Button type="submit" variant="contained" sx={{ mt: 4 }}>Confirm</Button> 
             </Box>
         </Paper>
+
     );
 }

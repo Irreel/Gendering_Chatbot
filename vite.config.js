@@ -5,45 +5,20 @@ import react from '@vitejs/plugin-react'
 
 
 export default defineConfig(({ command, mode, isSsrBuild, isPreview }) => {
-  if (command === 'serve') {
-    return {
-      // dev specific config
-      plugins: [react()],
-    }
-  } else {
-    // command === 'build'
-    const env = loadEnv(mode, process.cwd(), '')
 
-    return {
-      // build specific config
-      plugins: [react()],
-      base: '/qyzhao/',
-
-      define: {
-        __APP_ENV__: JSON.stringify(env.APP_ENV),
-      },
-
-      build: {
-        // generate .vite/manifest.json in outDir
-        manifest: true,
-        // rollupOptions: {
-        //   external: [
-        //     "react",
-        //     // "nonid",
-        //     // "polished",
-        //     "react-dom",
-        //     "react-router-dom",
-        //     // "sytled-components",
-        //     // "vite-plugin-svgr",
-        //   ],
-        // },
-
-          // rollupOptions: {
-          //   // overwrite default .html entry
-          //   input: '/src/main.jsx',
-          // },
-      },
-    }
+  return {
+    base: "/",
+    plugins: [react()],
+    preview: {
+     port: 8888,
+     strictPort: true,
+    },
+    server: {
+     port: 8888,
+     strictPort: true,
+     host: true,
+     origin: "http://0.0.0.0:8080",
+    },
   }
 })
 
