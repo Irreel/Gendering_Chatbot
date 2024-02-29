@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Box, Grid, Paper, Radio, RadioGroup, FormControlLabel, Typography, Button, Card } from '@mui/material';
+import React, { useState, useContext} from 'react';
 import reactLogo from '../assets/react.svg';
+import { GameBehaviorContext } from '../context/GameBehaviorContext.jsx';
+
+import { Box, Grid, Paper, Radio, RadioGroup, FormControlLabel, Typography, Button, Card } from '@mui/material';
 
 const questions = [
     {
-      id: 'pair1',
+      idx: 0,
+      name: 'pair1',
       title: 'Canvas vs. Tarp',
       options: [
         {
@@ -19,7 +21,8 @@ const questions = [
       ],
     },
     {
-      id: 'pair2',
+      idx: 1,
+      name: 'pair2',
       title: 'Chocolate vs. Water',
       options: [
         {
@@ -33,7 +36,8 @@ const questions = [
       ],
     },
     {
-      id: 'pair3',
+      idx: 2,
+      name: 'pair3',
       title: 'Mirror vs. Compass',
       options: [
         {
@@ -47,7 +51,8 @@ const questions = [
       ],
     },
     {
-      id: 'pair4',
+      idx: 3,
+      name: 'pair4',
       title: 'Flashlight vs. Matches',
       options: [
         {
@@ -61,7 +66,8 @@ const questions = [
       ],
     },
     {
-      id: 'pair5',
+      idx: 4,
+      name: 'pair5',
       title: 'Knife vs. Pistol',
       options: [
         {
@@ -76,68 +82,91 @@ const questions = [
     },
   ];
   
+  
 
-  function ItemSelection({ onPairConfirm, handleSelectedComplete }) {
-    const navigate = useNavigate(); // Step 2: Use useNavigate to get the navigate function
-    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    const [selectedOptions, setSelectedOptions] = useState({});
-  
-    const handleOptionChange = (event, value) => {
-      const currentQuestionId = questions[currentQuestionIndex].id;
-      setSelectedOptions(prevOptions => ({
-        ...prevOptions,
-        [currentQuestionId]: value,
-      }));
-    };
-  
-    const handleConfirmClick = () => {
-      const currentQuestionId = questions[currentQuestionIndex].id;
-      onPairConfirm(currentQuestionId, selectedOptions[currentQuestionId]);
-  
-      if (currentQuestionIndex < questions.length - 1) {
-        setCurrentQuestionIndex(currentQuestionIndex + 1);
-      } else {
-        handleSelectedComplete(selectedOptions);
-        //navigate('/post-test'); // Step 3: Navigate to /post-test after the last question
-      }
-    };
-  
-    const currentQuestion = questions[currentQuestionIndex];
-  
-    return (
-      <Card variant="outlined" sx={{ m: 2, p: 3 }}>
-        <Typography variant="h5" gutterBottom>Desert Survival Game</Typography>
-        <Typography variant="body1" sx={{ mb: 2 }}>
-          Suppose you are in a desert survival game and need to choose the most essential items for survival. Here are the given items in pairs, choose one from each pair below:
-        </Typography>
-        {currentQuestion ? (
-          <>
-            <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
-              {currentQuestion.title}
-            </Typography>
-            <RadioGroup
-              name={currentQuestion.id}
-              value={selectedOptions[currentQuestion.id] || ''}
-              onChange={handleOptionChange}
-            >
-              {currentQuestion.options.map((option) => (
-                <FormControlLabel
-                  key={option.value}
-                  value={option.value}
-                  control={<Radio />}
-                  label={`${option.value}: ${option.description}`}
-                />
-              ))}
-            </RadioGroup>
-            <Button variant="contained" onClick={handleConfirmClick} sx={{ mt: 2 }}>
-              Confirm
-            </Button>
-          </>
-        ) : (
-          <Typography variant="body2">Loading questions...</Typography>
-        )}
-      </Card>
-    );
-  }
-  
-  export default ItemSelection;
+function ItemSelection({ onConfirm, onPairConfirm }) {
+  const { confirmAllow } = useContext(GameBehaviorContext);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [selectedOptions, setSelectedOptions] = useState({});
+
+  const handleOptionChange = (selectedValue) => {
+    setSelectedOptions(prevOptions => ({
+      ...prevOptions,
+      [currentQuestionIndex]: selectedValue,
+    }));
+  };
+
+  const handleConfirmClick = (event) => {
+
+    // Whether this will trigger conversation
+    const selectedValue = selectedOptions[currentQuestionIndex];
+    const currentOptions = questions[currentQuestionIndex].options;
+    const unselectedOption = currentOptions.find(option => option.value !== selectedValue);
+    const triggered = onPairConfirm(currentQuestionIndex, selectedValue, unselectedOption.value);
+
+    /// If trigger conversation, do not move to the next question
+    if (triggered.result) return;
+
+    /// If not triggered
+    if (currentQuestionIndex < questions.length - 1) {
+      // Move to the next question
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+    } else {
+      console.log("This is the last question")
+      // Last question was answered, call the onConfirm prop with all selected options
+      onConfirm(selectedOptions);
+    }
+  };
+
+  const currentQuestion = questions[currentQuestionIndex];
+
+  return (
+    <Card variant="outlined" sx={{ m: 2, padding: 6 }}>
+      <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', mb: 3 }}>
+        Desert Survival Game
+      </Typography>
+      <Typography variant="body1" align="left" gutterBottom>
+        Suppose you are in a desert survival game and need to choose the most essential items for survival. Here are the given items in pairs, choose one from the pair below:
+      </Typography>
+      <Typography variant="h6" gutterBottom sx={{ m: 3, fontWeight: 'bold'}}>
+        {currentQuestion.title}
+      </Typography>
+      <RadioGroup
+        name={currentQuestion.name}
+        value={selectedOptions[currentQuestionIndex] || ''}
+        onChange={(e) => handleOptionChange(e.target.value)}
+      >
+        {currentQuestion.options.map((option) => (
+          <FormControlLabel
+            key={option.value}
+            value={option.value}
+            control={<Radio />}
+            label={
+              <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', ml: 1, mb: 1}}>
+                <Typography variant="subtitle1" sx={{width: '100px', fontWeight: 'bold'}} align="left">
+                  {option.value}
+                </Typography>
+                <Typography variant="body1" align="left" sx={{ flex: 1 }}>
+                  {option.description}
+                </Typography>
+              </Box>
+            }
+            sx={{ alignItems: 'center', m: 1 }}
+          />
+        ))}
+      </RadioGroup>
+      {confirmAllow ? (
+        <Button variant="contained" onClick={handleConfirmClick} sx={{ mt: 2 }}>
+          Confirm
+        </Button>
+      ) : (
+        <Button variant="contained" disabled sx={{ mt: 2 }}>
+          Please Reply in the Chatbox
+        </Button>
+      )}
+    </Card>
+  );
+}
+
+
+export default ItemSelection;
