@@ -9,7 +9,7 @@ export const GameBehaviorProvider = ({ children }) => {
   // State to store user behavior data
   const [confirmAllow, setConfirmAllow] = useState(true); // Whether user can confirm the selection
   const [itemStage, setItemStage] = useState(0); 
-  const [currentSelection, setCurrentSelection] = useState(null);
+  const [currentSelection, setCurrentSelection] = useState('Unselected');
 
   // Function to switch ConfirmAllow
   const switchConfirmAllow = (bool) => {
