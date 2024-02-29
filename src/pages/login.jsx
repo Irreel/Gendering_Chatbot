@@ -22,13 +22,10 @@ export async function loginAction({ request }) {
                 // Send post request to server
                 const response = await fetch(SERVER+'/api/login', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*'
-                    },
+                    headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ 'name': name, 'email': email, 'timestamp': timestamp }) 
-                });
-                console.log("Login succeed")
+                }).then(console.log("Login succeed in DB"));
+                
                 return { name: name, email: email, error: null };
 
        } catch (error) {
@@ -74,7 +71,7 @@ export default function Login() {
             
 
             <Form className="auth-container" method="post" action={loginAction}>
-              <Box component="form" noValidate autoComplete="off" sx={{ mt: 2 }}>
+              <Box component="div" noValidate autoComplete="off" sx={{ mt: 2 }}>
                 {actionData?.error && <p>{actionData.error}</p>}
 
                 <TextField

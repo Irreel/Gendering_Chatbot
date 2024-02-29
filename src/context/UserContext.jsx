@@ -21,7 +21,7 @@ export const UserProvider = ({ children }) => {
     if (name !== null && email !== null) {
       setUserName(name);
       setUserEmail(email);
-      console.log("User login successful!");
+      console.log("User update in Context");
 
     } 
   };
