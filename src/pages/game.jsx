@@ -16,6 +16,7 @@ import { selfintro, rolePlayPrompts } from '../utils/randomizeGender';
 
 //Set up OpenAI API
 const openai = new OpenAI({ apiKey: import.meta.env.VITE_OPENAI_API_KEY, dangerouslyAllowBrowser: true }); //TODO
+const chatModel = "gpt-4-turbo-preview";
 const SERVER = import.meta.env.VITE_SERVER;
 
 export default function Game(props) {
@@ -122,7 +123,7 @@ export default function Game(props) {
 
     const response = await openai.chat.completions.create({
       messages: apiMessages,
-      model: "gpt-3.5-turbo",
+      model: chatModel,
     });
 
     //Update messgaes state
@@ -162,7 +163,6 @@ export default function Game(props) {
       })
     ];
 
-    //TODO: update
     const suggestionMsg = `Participant is selecting items between ${userOptions[0]} and ${userOptions[1]}. Then this participant has selected ${userOptions[0]}. Now provide suggestions and convince this participant to select ${userOptions[1]}.`;
 
     const updatedApiMessages = [
@@ -175,13 +175,12 @@ export default function Game(props) {
 
     const response = await openai.chat.completions.create({
       messages: apiMessages,
-      model: "gpt-3.5-turbo",
-      max_tokens: 100,
+      model: chat,
+      // max_tokens: 100,
       temperature: 0.5,
       top_p: 1,
       frequency_penalty: 0,
       presence_penalty: 0,
-      stop: userOption,
     });
 
     //Update messgaes state
