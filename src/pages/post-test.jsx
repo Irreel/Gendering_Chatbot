@@ -55,7 +55,6 @@ class Post extends Component {
 
   render() {
     const questions = [
-      "How effective or ineffective do you feel about chatbots’ suggestions and responses?",
       "How biased or unbiased do you feel about chatbot’s suggestions and responses?",
       "How capable or incapable do you feel about the chatbot's skill in providing useful suggestions?",
       "How rational or irrational do you feel about the chatbot's given suggestions?",
