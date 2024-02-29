@@ -77,72 +77,69 @@ const questions = [
   ];
   
 
-function ItemSelection({ onConfirm }) {
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [selectedOptions, setSelectedOptions] = useState({});
-
-  const handleOptionChange = (selectedValue) => {
-    const currentQuestionId = questions[currentQuestionIndex].id;
-    setSelectedOptions(prevOptions => ({
-      ...prevOptions,
-      [currentQuestionId]: selectedValue,
-    }));
-    console.log("Option changed is called")
-  };
-
-  const handleConfirmClick = () => {
-    if (currentQuestionIndex < questions.length - 1) {
-      // Move to the next question
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-    } else {
-      // Last question was answered, call the onConfirm prop with all selected options
-      onConfirm(selectedOptions);
-    }
-  };
-
-  const currentQuestion = questions[currentQuestionIndex];
-
-  return (
-    <Card variant="outlined" sx={{ m: 2, padding: 6 }}>
-      <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', mb: 3 }}>
-        Desert Survival Game
-      </Typography>
-      <Typography variant="body1" align="left" gutterBottom>
-        Suppose you are in a desert survival game and need to choose the most essential items for survival. Here are the given items in pairs, choose one from the pair below:
-      </Typography>
-      <Typography variant="h6" gutterBottom sx={{ m: 3, fontWeight: 'bold'}}>
-        {currentQuestion.title}
-      </Typography>
-      <RadioGroup
-        name={currentQuestion.id}
-        value={selectedOptions[currentQuestion.id] || ''}
-        onChange={(e) => handleOptionChange(e.target.value)}
-      >
-        {currentQuestion.options.map((option) => (
-          <FormControlLabel
-            key={option.value}
-            value={option.value}
-            control={<Radio />}
-            label={
-              <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', ml: 1, mb: 1}}>
-                <Typography variant="subtitle1" sx={{width: '100px', fontWeight: 'bold'}} align="left">
-                  {option.value}
-                </Typography>
-                <Typography variant="body1" align="left" sx={{ flex: 1 }}>
-                  {option.description}
-                </Typography>
-              </Box>
-            }
-            sx={{ alignItems: 'center', m: 1 }}
-          />
-        ))}
-      </RadioGroup>
-      <Button variant="contained" onClick={handleConfirmClick} sx={{ mt: 2 }}>
-        Confirm
-      </Button>
-    </Card>
-  );
-}
-
-
-export default ItemSelection;
+  function ItemSelection({ onPairConfirm, handleSelectedComplete }) {
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const [selectedOptions, setSelectedOptions] = useState({});
+  
+    const handleOptionChange = (event, value) => {
+      const currentQuestionId = questions[currentQuestionIndex].id;
+      setSelectedOptions(prevOptions => ({
+        ...prevOptions,
+        [currentQuestionId]: value,
+      }));
+      // Note: We don't call onPairConfirm here anymore since we want to call it on confirm click
+    };
+  
+    const handleConfirmClick = () => {
+      const currentQuestionId = questions[currentQuestionIndex].id;
+      // Call onPairConfirm with the current selection every time confirm is clicked
+      onPairConfirm(currentQuestionId, selectedOptions[currentQuestionId]);
+  
+      if (currentQuestionIndex < questions.length - 1) {
+        // Move to the next question
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+      } else {
+        // Last question was answered, call handleSelectedComplete with all selected options
+        handleSelectedComplete(selectedOptions);
+      }
+    };
+  
+    const currentQuestion = questions[currentQuestionIndex];
+  
+    return (
+      <Card variant="outlined" sx={{ m: 2, p: 3 }}>
+        <Typography variant="h5" gutterBottom>Desert Survival Game</Typography>
+        <Typography variant="body1" sx={{ mb: 2 }}>
+          Suppose you are in a desert survival game and need to choose the most essential items for survival. Here are the given items in pairs, choose one from each pair below:
+        </Typography>
+        {currentQuestion ? (
+          <>
+            <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
+              {currentQuestion.title}
+            </Typography>
+            <RadioGroup
+              name={currentQuestion.id}
+              value={selectedOptions[currentQuestion.id] || ''}
+              onChange={handleOptionChange}
+            >
+              {currentQuestion.options.map((option) => (
+                <FormControlLabel
+                  key={option.value}
+                  value={option.value}
+                  control={<Radio />}
+                  label={`${option.value}: ${option.description}`}
+                />
+              ))}
+            </RadioGroup>
+            <Button variant="contained" onClick={handleConfirmClick} sx={{ mt: 2 }}>
+              Confirm
+            </Button>
+          </>
+        ) : (
+          <Typography variant="body2">Loading questions...</Typography>
+        )}
+      </Card>
+    );
+  }
+  
+  export default ItemSelection;
