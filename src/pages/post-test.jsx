@@ -79,7 +79,7 @@ class Post extends Component {
                   value={this.state.responses[`q${index + 1}`]}
                   onChange={(event) => this.handleResponseChange(`q${index + 1}`, event.target.value)}
                 >
-                  {['Very capable', 'Very accurate', 'Very professional', ' Very effective', 'Very clear'].map((label, value) => (
+                  {['Totally Disagree', 'Disagree', 'Neutral', 'Agree', 'Totally Agree'].map((label, value) => (
                     <FormControlLabel key={value} value={String(value + 1)} control={<Radio />} label={label} />
                   ))}
                 </RadioGroup>
