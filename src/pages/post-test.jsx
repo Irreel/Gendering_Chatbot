@@ -68,11 +68,16 @@ class Post extends Component {
         <Typography variant="h3" component="h3" gutterBottom>
           Post-test Survey
         </Typography>
+        <Typography variant="p" component="h3" gutterBottom>
+          Before finished the study, here are 5 quick questions for you.
+        </Typography>  
+        <br/>      
         {questions.map((question, index) => (
-          <Card key={index} sx={{ margin: '10px 0' , padding:'20px 30px'}}>
+          <Card key={index} sx={{ margin: '20px 60px' , padding:'20px 30px'}}>
             <CardContent>
               <FormControl component="fieldset" sx={{ width: '100%' }}>
-                <FormLabel component="legend" sx={{ wordWrap: 'break-word' }}>{question}</FormLabel>
+                <Typography variant="h6" component="legend" sx={{ wordWrap: 'break-word' }}>{question}</Typography>
+                <br />
                 <RadioGroup
                   aria-label={`question-${index + 1}`}
                   name={`q${index + 1}`}
