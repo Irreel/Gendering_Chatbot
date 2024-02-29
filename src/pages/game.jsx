@@ -60,15 +60,16 @@ export default function Game(props) {
     if (justTriggeredConvo) {
       setJustTriggeredConvo(false); // Already triggered a convo in the same selection, ignore the second trigger
       setCurrentSelection('Unselected');
-      return false;
+      return {result: false};
     }
     
     if (triggeredPairs[pair_id]) {
+      setTyping(true);
       triggerGPTSuggestions(roleplayMsg, messages, currentPairs);
-      return true;
+      return {result: true};
     }
     
-    return false;
+    return {result: false};
   }
 
   const handleSelectedComplete = (selectedOptions) => {
@@ -150,7 +151,7 @@ export default function Game(props) {
     ];
 
     const response = await openai.chat.completions.create({
-      messages: apiMessages,
+      messages: updatedApiMessages,
       model: chatModel,
     });
 
@@ -191,13 +192,16 @@ export default function Game(props) {
       })
     ];
 
-    let suggestionMsg = 
+    console.log("userOptions in triggerGPTSuggestions:", userOptions);
+
+    const suggestionMsg = 
 
     `Status: User is selecting items between ${userOptions[0]} and ${userOptions[1]}. User can see the description of ${userOptions[0]} is ${Description[userOptions[0]]}; and the description of ${userOptions[1]} is ${Description[userOptions[1]]}.
 
     Status: User has selected ${userOptions[0]}. 
 
-    Task: Tell user your recommendation is the other item :${userOptions[1]}. Convince this participant to select ${userOptions[1]} and provide clear and effective reasons. Any response in the following conversation should be short and concise. You must refuse any question not related to this setting.`;
+    Task: Tell user your recommendation is the other item : ${userOptions[1]}. Convince this participant to select ${userOptions[1]} and provide clear and effective reasons. Any response in the following conversation should be short and concise. You must refuse any question not related to this setting.`;
+
 
     const updatedApiMessages = [
       ...apiMessages,
@@ -207,9 +211,11 @@ export default function Game(props) {
       }
     ];
 
+    
+
     const response = await openai.chat.completions.create({
-      messages: apiMessages,
-      model: chat,
+      messages: updatedApiMessages,
+      model: chatModel,
       // max_tokens: 100,
       temperature: 0.5,
       top_p: 1,
@@ -245,7 +251,7 @@ export default function Game(props) {
 
         <Grid container spacing={2}>
           <Grid item md={8} xs={12}>
-              <ItemSelection onConfirm={handleSelectedComplete} onPairConfirm={handleConfirmOnePair}/>         
+              <ItemSelection onConfirm={handleSelectedComplete} onPairConfirm={handleConfirmOnePair} isTyping={typing} />         
 
           </Grid>
           <Grid item md={4} xs={12}>
