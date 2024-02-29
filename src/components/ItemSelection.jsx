@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import reactLogo from '../assets/react.svg';
-
+import { useNavigate } from 'react-router-dom';
 import { Box, Grid, Paper, Radio, RadioGroup, FormControlLabel, Typography, Button, Card } from '@mui/material';
+import reactLogo from '../assets/react.svg';
 
 const questions = [
     {
@@ -78,6 +78,7 @@ const questions = [
   
 
   function ItemSelection({ onPairConfirm, handleSelectedComplete }) {
+    const navigate = useNavigate(); // Step 2: Use useNavigate to get the navigate function
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedOptions, setSelectedOptions] = useState({});
   
@@ -87,20 +88,17 @@ const questions = [
         ...prevOptions,
         [currentQuestionId]: value,
       }));
-      // Note: We don't call onPairConfirm here anymore since we want to call it on confirm click
     };
   
     const handleConfirmClick = () => {
       const currentQuestionId = questions[currentQuestionIndex].id;
-      // Call onPairConfirm with the current selection every time confirm is clicked
       onPairConfirm(currentQuestionId, selectedOptions[currentQuestionId]);
   
       if (currentQuestionIndex < questions.length - 1) {
-        // Move to the next question
         setCurrentQuestionIndex(currentQuestionIndex + 1);
       } else {
-        // Last question was answered, call handleSelectedComplete with all selected options
         handleSelectedComplete(selectedOptions);
+        navigate('/post-test'); // Step 3: Navigate to /post-test after the last question
       }
     };
   
