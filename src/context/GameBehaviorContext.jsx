@@ -8,23 +8,32 @@ export const GameBehaviorProvider = ({ children }) => {
 
   // State to store user behavior data
   const [confirmAllow, setConfirmAllow] = useState(true); // Whether user can confirm the selection
-  // const [sendAllow, setSendAllow] = useState(true); // User cannot send message until convo is triggered
+  const [itemStage, setItemStage] = useState(0); 
+  const [currentSelection, setCurrentSelection] = useState(null);
 
   // Function to switch ConfirmAllow
   const switchConfirmAllow = (bool) => {
     setConfirmAllow(bool);
-    // if(confirmAllow) {
-    //   setConfirmAllow(false);
-    // }
-    // else {
-    //   setConfirmAllow(true);
-    // }
   };
+
+  const nextStage= () => {
+    if (itemStage == 4){
+      return false;
+    }
+    else {
+      setItemStage(itemStage+1);
+      return true;
+    }
+  }
 
   // Value object to be passed to consumers
   const value = {
     confirmAllow,
     switchConfirmAllow,
+    itemStage,
+    nextStage,
+    currentSelection, 
+    setCurrentSelection
   };
 
 
