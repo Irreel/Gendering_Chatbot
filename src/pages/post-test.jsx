@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Link, Form, useActionData } from "react-router-dom";
+import { Link, Form, useActionData, Navigate } from "react-router-dom";
 import { Card, CardContent, FormControl, RadioGroup, FormControlLabel, Radio, Button, Typography, Box } from '@mui/material';
 import { UserContext } from "../context/UserContext.jsx";
 
@@ -20,14 +20,22 @@ export async function postTestAction({ request }) {
 
   const jsonData = JSON.stringify(formData);
 
-  // Send jsonData to the server 
-  const response = await fetch(SERVER+'/api/post-test', { 
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: jsonData,
-  });
+  try{
+    //  Send jsonData to the server 
+    const response = await fetch(SERVER+'/api/post-test', { 
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonData,
+    }).then(console.log("post-test data sent to server"));
+  }
+  catch (error) {
+    console.error('Error');
+    return {redirect: true};
+  }
+
+  return {redirect: true};
 }
 
 
@@ -73,8 +81,9 @@ export default function Post() {
     }
   }, []);
 
-  if (shouldRedirect) {
-      return <Navigate to="/end" replace/>;
+  if (actionData?.redirect || shouldRedirect) {
+    completePostTest();
+    return <Navigate to="/end" replace/>;
   }
 
   return (
@@ -112,7 +121,7 @@ export default function Post() {
         </FormControl>
         <input name='email' readOnly hidden value={ userEmail || "Error"} />
 
-        <Button variant="contained" color="primary" type="submit" size="large" onClick={handleComplete} disabled={Object.values(responses).some(value => value === '')}>Submit</Button>
+        <Button variant="contained" color="primary" type="submit" size="large" onClick={handleComplete} disabled={Object.values(responses).some(value => value === '') || actionData?.redirect}>Submit</Button>
 
       </Form>
     </Box>
