@@ -13,6 +13,7 @@ import { MainContainer, ChatContainer, MessageList, Message, MessageInput, Avata
 
 //Set up OpenAI API
 const openai = new OpenAI({ apiKey: import.meta.env.VITE_OPENAI_API_KEY, dangerouslyAllowBrowser: true }); //TODO
+const SERVER = import.meta.env.VITE_SERVER;
 
 export default function Game(props) {
   const { userEmail, completeGame, userCompletedGame, chatbotRole, triggeredPairs } = useContext(UserContext);
@@ -39,21 +40,21 @@ export default function Game(props) {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ 'email': userEmail, 'timestamp': timestamp, 'item_stage': pair_id, 'item_option': selectedOption}) 
-        }).then( console.log("Pair completed in DB") );
+        }).then( console.log("Chat recorded in DB") );
 
-    }  catch (error) { console.log("Error in sending selected results to server"); }
+    }  catch (error) { console.log("Error in sending data to server"); console.log(error);}
 
     // Whether this confirm will trigger the convo
 
     console.log("triggeredPairs", triggeredPairs)
     // If already triggered, return false and update trigeredConvo state
     if (justTriggeredConvo) {
-      setJustTriggeredConvo(false); //Already triggered a convo in the same selection, ignore the second trigger
+      setJustTriggeredConvo(false); // Already triggered a convo in the same selection, ignore the second trigger
       return false;
     }
     
     if (triggeredPairs[pair_id]) {
-      triggerGPTSuggestions(roleplayMsg, messages, unselectOption);
+      triggerGPTSuggestions(roleplayMsg, messages, [selectedOption, unselectOption]);
       return true;
     }
     
@@ -85,7 +86,17 @@ export default function Game(props) {
     else alert("You send a null message!");
 
     //Calling chatGPT
-    await callGPT(roleplayMsg, newMessages); //TODO
+    await callGPT(roleplayMsg, newMessages);
+
+    // Record behaviors on server
+    try {
+      const response = await fetch(SERVER+'/api/chatSend', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ 'email': userEmail, 'timestamp': timestamp, 'item_stage': pair_id, 'item_option': selectedOption}) 
+      }).then( console.log("Pair completed in DB") );
+
+  }  catch (error) { console.log("Error in sending data to server"); console.log(error);}
   }
 
   async function callGPT(sysMessage, chatMessages) {
@@ -124,15 +135,13 @@ export default function Game(props) {
     setTyping(false);
   }
 
-  async function triggerGPTSuggestions(sysMessage, chatMessages, userOption) {
+  async function triggerGPTSuggestions(sysMessage, chatMessages, userOptions) {
     console.log("triggerGPTSuggestions is called!");
 
     // Update user behavior context
     // When convo just triggered, users are not allowed to confirm and need to reply first
     setJustTriggeredConvo(true);
     switchConfirmAllow(false);
-
-    // TODO: trigger GPT-3.5 to provide suggestions
 
     //Transform the chatMessages to a legal structure
     let apiMessages = [
@@ -154,24 +163,31 @@ export default function Game(props) {
       })
     ];
 
-    const suggestionMsg = "";
+    //TODO: update
+    const suggestionMsg = `Between ${userOptions[0]} and ${userOptions[1]}, the participant has selected ${userOptions[0]}. Now provide suggestions and convince users to select ${userOptions[1]}.`;
 
-    // TODO
-    // const response = await openai.chat.completions.create({
-    //   messages: apiMessages,
-    //   model: "gpt-3.5-turbo",
-    //   max_tokens: 100,
-    //   temperature: 0.5,
-    //   top_p: 1,
-    //   frequency_penalty: 0,
-    //   presence_penalty: 0,
-    //   stop: userOption,
-    // });
+    const updatedApiMessages = [
+      ...apiMessages,
+      {
+        role: 'system',
+        content: suggestionMsg
+      }
+    ];
+
+    const response = await openai.chat.completions.create({
+      messages: apiMessages,
+      model: "gpt-3.5-turbo",
+      max_tokens: 100,
+      temperature: 0.5,
+      top_p: 1,
+      frequency_penalty: 0,
+      presence_penalty: 0,
+      stop: userOption,
+    });
 
     //Update messgaes state
     setMessages([...chatMessages, {
-      // message: response.choices[0].message.content,
-      message: "[Just trigger the GPT-3.5 to provide suggestions]",
+      message: response.choices[0].message.content,
       sentTime: 'Just now',
       sender: 'bot',
     }]);

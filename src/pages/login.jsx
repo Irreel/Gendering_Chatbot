@@ -92,7 +92,7 @@ export default function Login() {
                 />
                 <br/>
 
-                <Button type="submit" variant="contained" sx={{ mt: 4 }}>Confirm</Button> 
+                <Button type="submit" variant="contained" sx={{ mt: 4 }} disabled={Boolean(actionData?.name && actionData?.email)}>Confirm</Button>
             </Box>
           </Form>
         </Paper>
