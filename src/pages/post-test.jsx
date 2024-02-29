@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import { Card, CardContent, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, Button, Typography, Box } from '@mui/material';
 
+const SERVER = import.meta.env.VITE_SERVER;
+
 export async function postTestAction({ request }) {
   console.log("postTestAction called");
 
@@ -14,13 +16,12 @@ export async function postTestAction({ request }) {
       q3: data.get('q3'),
       q4: data.get('q4'),
       q5: data.get('q5'),
-      q6: data.get('q6'),
     };
 
   const jsonData = JSON.stringify(formData);
 
   // Send jsonData to the server 
-  const response = await fetch('/api/post-test', { //TODO
+  const response = await fetch(SERVER+'/api/post-test', { 
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -39,7 +40,6 @@ class Post extends Component {
         q3: '',
         q4: '',
         q5: '',
-        q6: '',
       },
     };
   }
@@ -53,13 +53,14 @@ class Post extends Component {
     }));
   };
 
+
   render() {
     const questions = [
-      "How biased or unbiased do you feel about chatbot’s suggestions and responses?",
-      "How capable or incapable do you feel about the chatbot's skill in providing useful suggestions?",
-      "How rational or irrational do you feel about the chatbot's given suggestions?",
-      "How professional or unprofessional do you feel about the chatbot’s desert survival knowledge?",
-      "To what degree did chatbot help you during the decision-making process?",
+      "To what degree did you feel that chatbots were capable in answering questions and providing suggestions?",
+      "To what degree did you feel that chatbot's explanation of each given suggestion was accurate?",
+      "To what degree did you feel that chatbots were professional in desert survival knowledge?",
+      "To what degree did you feel that chatbots’ suggestions and responses were effective in guiding your decision-making?",
+      "To what degree did you feel that chatbots provided clear reasons in their reponses and suggestions?",
     ];
 
     return (
@@ -78,7 +79,7 @@ class Post extends Component {
                   value={this.state.responses[`q${index + 1}`]}
                   onChange={(event) => this.handleResponseChange(`q${index + 1}`, event.target.value)}
                 >
-                  {['Totally Disagree', 'Disagree', 'Neutral', 'Agree', 'Totally Agree'].map((label, value) => (
+                  {['Not at all', 'Slightly', 'Moderately', 'Very', 'Extremely'].map((label, value) => (
                     <FormControlLabel key={value} value={String(value + 1)} control={<Radio />} label={label} />
                   ))}
                 </RadioGroup>
