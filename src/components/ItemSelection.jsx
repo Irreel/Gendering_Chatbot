@@ -98,7 +98,7 @@ const questions = [
         setCurrentQuestionIndex(currentQuestionIndex + 1);
       } else {
         handleSelectedComplete(selectedOptions);
-        navigate('/post-test'); // Step 3: Navigate to /post-test after the last question
+        //navigate('/post-test'); // Step 3: Navigate to /post-test after the last question
       }
     };
   
