@@ -84,7 +84,7 @@ const questions = [
   
   
 
-function ItemSelection({ onConfirm, onPairConfirm }) {
+function ItemSelection({ onConfirm, onPairConfirm, isTyping }) {
   const { confirmAllow } = useContext(GameBehaviorContext);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState({});
@@ -96,26 +96,28 @@ function ItemSelection({ onConfirm, onPairConfirm }) {
     }));
   };
 
-  const handleConfirmClick = (event) => {
+  const handleConfirmClick = async (event) => {
 
     // Whether this will trigger conversation
     const selectedValue = selectedOptions[currentQuestionIndex];
     const currentOptions = questions[currentQuestionIndex].options;
     const unselectedOption = currentOptions.find(option => option.value !== selectedValue);
-    const triggered = onPairConfirm(currentQuestionIndex, selectedValue, unselectedOption.value);
-
-    /// If trigger conversation, do not move to the next question
-    if (triggered.result) return;
-
-    /// If not triggered
-    if (currentQuestionIndex < questions.length - 1) {
-      // Move to the next question
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-    } else {
-      console.log("This is the last question")
-      // Last question was answered, call the onConfirm prop with all selected options
-      onConfirm(selectedOptions);
+    const triggered = await onPairConfirm(currentQuestionIndex, selectedValue, unselectedOption.value);
+    
+    // If not triggered, move to the next question
+    if (!triggered.result) {
+      console.log("it said triggered.result is false but:")
+      console.log(triggered.result)
+      if (currentQuestionIndex < questions.length - 1) {
+        // Move to the next question
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+      } else {
+        console.log("This is the last question")
+        // Last question was answered, call the onConfirm prop with all selected options
+        onConfirm(selectedOptions);
+      }
     }
+
   };
 
   const currentQuestion = questions[currentQuestionIndex];
@@ -156,7 +158,7 @@ function ItemSelection({ onConfirm, onPairConfirm }) {
         ))}
       </RadioGroup>
       {confirmAllow ? (
-        <Button variant="contained" onClick={handleConfirmClick} sx={{ mt: 2 }}>
+        <Button variant="contained" onClick={handleConfirmClick} sx={{ mt: 2 }} disabled={isTyping}>
           Confirm
         </Button>
       ) : (
