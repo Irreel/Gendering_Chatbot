@@ -24,7 +24,6 @@ const router = createBrowserRouter([
       { 
         path: '/game', 
         element: <Game />,
-        loader: async () => {return null}, // TODO: provide user information
       },
       { 
         path: '/post-test', 
