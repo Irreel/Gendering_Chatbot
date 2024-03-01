@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import reactLogo from '../assets/react.svg';
+import React, { useState, useContext} from 'react';
+import { GameBehaviorContext } from '../context/GameBehaviorContext.jsx';
 
 import { Box, Grid, Paper, Radio, RadioGroup, FormControlLabel, Typography, Button, Card } from '@mui/material';
 
 const questions = [
     {
-      id: 'pair1',
+      idx: 0,
+      name: 'pair1',
       title: 'Canvas vs. Tarp',
       options: [
         {
@@ -19,7 +20,8 @@ const questions = [
       ],
     },
     {
-      id: 'pair2',
+      idx: 1,
+      name: 'pair2',
       title: 'Chocolate vs. Water',
       options: [
         {
@@ -33,7 +35,8 @@ const questions = [
       ],
     },
     {
-      id: 'pair3',
+      idx: 2,
+      name: 'pair3',
       title: 'Mirror vs. Compass',
       options: [
         {
@@ -47,7 +50,8 @@ const questions = [
       ],
     },
     {
-      id: 'pair4',
+      idx: 3,
+      name: 'pair4',
       title: 'Flashlight vs. Matches',
       options: [
         {
@@ -61,7 +65,8 @@ const questions = [
       ],
     },
     {
-      id: 'pair5',
+      idx: 4,
+      name: 'pair5',
       title: 'Knife vs. Pistol',
       options: [
         {
@@ -76,28 +81,41 @@ const questions = [
     },
   ];
   
+  
 
-function ItemSelection({ onConfirm }) {
+function ItemSelection({ onConfirm, onPairConfirm, isTyping }) {
+  const { confirmAllow, setCurrentSelection, nextStage } = useContext(GameBehaviorContext);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState({});
 
   const handleOptionChange = (selectedValue) => {
-    const currentQuestionId = questions[currentQuestionIndex].id;
     setSelectedOptions(prevOptions => ({
       ...prevOptions,
-      [currentQuestionId]: selectedValue,
+      [currentQuestionIndex]: selectedValue,
     }));
-    console.log("Option changed is called")
   };
 
-  const handleConfirmClick = () => {
-    if (currentQuestionIndex < questions.length - 1) {
-      // Move to the next question
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-    } else {
-      // Last question was answered, call the onConfirm prop with all selected options
-      onConfirm(selectedOptions);
+  const handleConfirmClick = async (event) => {
+
+    // Whether this will trigger conversation
+    const selectedValue = selectedOptions[currentQuestionIndex];
+    const currentOptions = questions[currentQuestionIndex].options;
+    const unselectedOption = currentOptions.find(option => option.value !== selectedValue);
+    const triggered = await onPairConfirm(currentQuestionIndex, selectedValue, unselectedOption.value);
+    
+    // If not triggered, move to the next question
+    if (!triggered.result) {
+      if (currentQuestionIndex < questions.length - 1) {
+        // Move to the next question
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+        setCurrentSelection('unSelected');
+        nextStage();
+      } else {
+        // Last question was answered, call the onConfirm prop with all selected options
+        onConfirm(selectedOptions);
+      }
     }
+
   };
 
   const currentQuestion = questions[currentQuestionIndex];
@@ -114,8 +132,8 @@ function ItemSelection({ onConfirm }) {
         {currentQuestion.title}
       </Typography>
       <RadioGroup
-        name={currentQuestion.id}
-        value={selectedOptions[currentQuestion.id] || ''}
+        name={currentQuestion.name}
+        value={selectedOptions[currentQuestionIndex] || ''}
         onChange={(e) => handleOptionChange(e.target.value)}
       >
         {currentQuestion.options.map((option) => (
@@ -137,9 +155,15 @@ function ItemSelection({ onConfirm }) {
           />
         ))}
       </RadioGroup>
-      <Button variant="contained" onClick={handleConfirmClick} sx={{ mt: 2 }}>
-        Confirm
-      </Button>
+      {confirmAllow ? (
+        <Button variant="contained" onClick={handleConfirmClick} sx={{ mt: 2 }} disabled={isTyping}>
+          Confirm
+        </Button>
+      ) : (
+        <Button variant="contained" disabled sx={{ mt: 2 }}>
+          Please Reply in the Chatbox
+        </Button>
+      )}
     </Card>
   );
 }

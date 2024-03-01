@@ -28,7 +28,7 @@ export const UserProvider = ({ children }) => {
 
   const initGameSettings = () => {
     if (!userCompletedGame) {
-      setChatbotRole(randomizeGender());
+      setChatbotRole(randomizeGender()[0]);
       setTriggeredPairs(randomizeIdxArray());
       console.log("triggeredPair: ", triggeredPairs);
     }
