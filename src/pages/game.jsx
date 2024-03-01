@@ -252,15 +252,15 @@ export default function Game(props) {
 
   return (
     <>
-      <Box sx={{ flexGrow: 1 }}>
+      <Box sx={{ flexGrow: 1, display: 'flex', flexDirection:'column'}}>
 
-        <Grid container spacing={2}>
+        <Grid container spacing={2} style={{flexGrow: 1}}>
           <Grid item md={8} xs={12}>
               <ItemSelection onConfirm={handleSelectedComplete} onPairConfirm={handleConfirmOnePair} isTyping={typing} />         
 
           </Grid>
-          <Grid item md={4} xs={12}>
-            <MainContainer>
+          <Grid item md={4} xs={12} style={{display: 'flex', flexDirection:'column'}}>
+            <MainContainer style={{flexFlow:1, overflow:'auto'}}>
               <ChatContainer>
                 <MessageList typingIndicator={typing? <TypingIndicator content="The other one is typing..."/> : null}>
                   <Message
