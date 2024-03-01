@@ -11,4 +11,7 @@ export const Description =
     'Knife': 'A knife can cut down stakes to build a solar still or to build shelter, and cut down firewood for a fire.',
     'Pistol': 'A pistol can be good for signaling for help, and provide an alternative noise source if your voice is weak due to dehydration.',
 };
+
+const itemList = ['Canvas', 'Tarp', 'Chocolate', 'Water', 'Mirror', 'Compass', 'Flashlight', 'Matches', 'Knife', 'Pistol']
   
+export const idx2Name = (idx) => itemList[idx]

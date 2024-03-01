@@ -69,7 +69,6 @@ export default function Post() {
   };
 
   const handleComplete = () => {
-    console.log("handleComplete called");
     completePostTest();
   }
 

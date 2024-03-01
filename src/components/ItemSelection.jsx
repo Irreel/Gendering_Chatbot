@@ -85,7 +85,7 @@ const questions = [
   
 
 function ItemSelection({ onConfirm, onPairConfirm, isTyping }) {
-  const { confirmAllow } = useContext(GameBehaviorContext);
+  const { confirmAllow, setCurrentSelection, nextStage } = useContext(GameBehaviorContext);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState({});
 
@@ -106,13 +106,12 @@ function ItemSelection({ onConfirm, onPairConfirm, isTyping }) {
     
     // If not triggered, move to the next question
     if (!triggered.result) {
-      console.log("it said triggered.result is false but:")
-      console.log(triggered.result)
       if (currentQuestionIndex < questions.length - 1) {
         // Move to the next question
         setCurrentQuestionIndex(currentQuestionIndex + 1);
+        setCurrentSelection('unSelected');
+        nextStage();
       } else {
-        console.log("This is the last question")
         // Last question was answered, call the onConfirm prop with all selected options
         onConfirm(selectedOptions);
       }
