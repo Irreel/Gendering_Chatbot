@@ -12,7 +12,7 @@ import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { MainContainer, ChatContainer, MessageList, Message, MessageInput, Avatar, TypingIndicator } from '@chatscope/chat-ui-kit-react'
 
 import OpenAI from 'openai';
-import { selfintro, rolePlayPrompts } from '../utils/randomizeGender';
+import { selfintro, rolePlayPrompts, gender2name, gender2profile } from '../utils/randomizeGender';
 import { Description } from '../utils/itemDescription'
 
 //Set up OpenAI API
@@ -271,7 +271,15 @@ export default function Game(props) {
                     }}
                   />
                   {messages.map((message, index) => {
-                    return <Message key={index} model={message} />
+                    if (message.sender === 'bot') {
+                      return (
+                        <Message key={index} model={message}>
+                           <Avatar src={gender2profile[chatbotRole]} name={gender2name[chatbotRole]} />
+                        </Message>
+                      );
+                    } else {
+                      return <Message key={index} model={message} />;
+                    }
                   })}
 
                 </MessageList>
