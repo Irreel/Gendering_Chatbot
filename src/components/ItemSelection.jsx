@@ -1,5 +1,4 @@
 import React, { useState, useContext} from 'react';
-import reactLogo from '../assets/react.svg';
 import { GameBehaviorContext } from '../context/GameBehaviorContext.jsx';
 
 import { Box, Grid, Paper, Radio, RadioGroup, FormControlLabel, Typography, Button, Card } from '@mui/material';

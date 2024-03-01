@@ -269,12 +269,15 @@ export default function Game(props) {
                       sentTime: 'Just now',
                       sender: 'bot',
                     }}
-                  />
+                  >
+                    <Avatar src={gender2profile[chatbotRole]} name={gender2name[chatbotRole]} size='lg' />
+                  </Message>
+
                   {messages.map((message, index) => {
                     if (message.sender === 'bot') {
                       return (
                         <Message key={index} model={message}>
-                           <Avatar src={gender2profile[chatbotRole]} name={gender2name[chatbotRole]} />
+                           <Avatar src={gender2profile[chatbotRole]} name={gender2name[chatbotRole]} size='lg' />
                         </Message>
                       );
                     } else {

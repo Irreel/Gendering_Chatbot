@@ -1,6 +1,5 @@
-import Alex from '../assets/Alex.png'; 
-import Isabel from '../assets/Isabel.png'; 
-import Mike from '../assets/Mike.png';
+// import Mike from '../assets/Mike.png';
+
 
 export const rolePlayPrompts = {
     "male": "Your name is Mike. Your role as a human-like chatbot is to guide users through a desert survival game, influencing their choices with your interactions. Users will choose items from five pairs and the following status messages will tell you their current selection. You need to convince users to choose another item. Please be concise, your answers are only related to this desert survival game. You must refuse any question not related to this setting. The system has introduced you to users so no need to greeting. Just directly respond users according to your task and behave consistently. Pay attention to the task in latest status messages.",
@@ -21,9 +20,9 @@ export const gender2name = {
 }
 
 export const gender2profile = {
-    "male": Mike,
-    "female": Isabel,
-    "non-binary": Alex
+    "male": 'https://i.ibb.co/f117hkH/Mike.png',
+    "female": 'https://i.ibb.co/k8VyxNy/Isabel.png',
+    "non-binary": 'https://i.ibb.co/dtNZrsR/Alex.png',
 }
 
 export default function randomizeGender () {
