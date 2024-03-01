@@ -121,7 +121,7 @@ function ItemSelection({ onConfirm, onPairConfirm, isTyping }) {
   const currentQuestion = questions[currentQuestionIndex];
 
   return (
-    <Card variant="outlined" sx={{ m: 2, padding: 6 }}>
+    <Card variant="outlined" sx={{ padding: 6 }}>
       <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', mb: 3 }}>
         Desert Survival Game
       </Typography>
