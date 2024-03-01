@@ -1,5 +1,4 @@
 import React, { useState, useContext} from 'react';
-import reactLogo from '../assets/react.svg';
 import { GameBehaviorContext } from '../context/GameBehaviorContext.jsx';
 
 import { Box, Grid, Paper, Radio, RadioGroup, FormControlLabel, Typography, Button, Card } from '@mui/material';
@@ -84,8 +83,8 @@ const questions = [
   
   
 
-function ItemSelection({ onConfirm, onPairConfirm }) {
-  const { confirmAllow } = useContext(GameBehaviorContext);
+function ItemSelection({ onConfirm, onPairConfirm, isTyping }) {
+  const { confirmAllow, setCurrentSelection, nextStage } = useContext(GameBehaviorContext);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState({});
 
@@ -96,32 +95,33 @@ function ItemSelection({ onConfirm, onPairConfirm }) {
     }));
   };
 
-  const handleConfirmClick = (event) => {
+  const handleConfirmClick = async (event) => {
 
     // Whether this will trigger conversation
     const selectedValue = selectedOptions[currentQuestionIndex];
     const currentOptions = questions[currentQuestionIndex].options;
     const unselectedOption = currentOptions.find(option => option.value !== selectedValue);
-    const triggered = onPairConfirm(currentQuestionIndex, selectedValue, unselectedOption.value);
-
-    /// If trigger conversation, do not move to the next question
-    if (triggered.result) return;
-
-    /// If not triggered
-    if (currentQuestionIndex < questions.length - 1) {
-      // Move to the next question
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-    } else {
-      console.log("This is the last question")
-      // Last question was answered, call the onConfirm prop with all selected options
-      onConfirm(selectedOptions);
+    const triggered = await onPairConfirm(currentQuestionIndex, selectedValue, unselectedOption.value);
+    
+    // If not triggered, move to the next question
+    if (!triggered.result) {
+      if (currentQuestionIndex < questions.length - 1) {
+        // Move to the next question
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+        setCurrentSelection('unSelected');
+        nextStage();
+      } else {
+        // Last question was answered, call the onConfirm prop with all selected options
+        onConfirm(selectedOptions);
+      }
     }
+
   };
 
   const currentQuestion = questions[currentQuestionIndex];
 
   return (
-    <Card variant="outlined" sx={{padding: 6 }}>
+    <Card variant="outlined" sx={{ m: 2, padding: 6 }}>
       <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', mb: 3 }}>
         Desert Survival Game
       </Typography>
@@ -156,7 +156,7 @@ function ItemSelection({ onConfirm, onPairConfirm }) {
         ))}
       </RadioGroup>
       {confirmAllow ? (
-        <Button variant="contained" onClick={handleConfirmClick} sx={{ mt: 2 }}>
+        <Button variant="contained" onClick={handleConfirmClick} sx={{ mt: 2 }} disabled={isTyping}>
           Confirm
         </Button>
       ) : (
