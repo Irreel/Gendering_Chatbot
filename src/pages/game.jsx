@@ -12,15 +12,17 @@ import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { MainContainer, ChatContainer, MessageList, Message, MessageInput, Avatar, TypingIndicator } from '@chatscope/chat-ui-kit-react'
 
 import OpenAI from 'openai';
-import { selfintro, rolePlayPrompts } from '../utils/randomizeGender';
+import { selfintro, rolePlayPrompts, gender2name, gender2profile } from '../utils/randomizeGender';
+import { Description } from '../utils/itemDescription'
 
 //Set up OpenAI API
 const openai = new OpenAI({ apiKey: import.meta.env.VITE_OPENAI_API_KEY, dangerouslyAllowBrowser: true }); //TODO
+const chatModel = "gpt-4-turbo-preview";
 const SERVER = import.meta.env.VITE_SERVER;
 
 export default function Game(props) {
   const { userEmail, completeGame, userCompletedGame, chatbotRole, triggeredPairs } = useContext(UserContext);
-  const { switchConfirmAllow } = useContext(GameBehaviorContext);
+  const { switchConfirmAllow, currentSelection, setCurrentSelection, currentStage, setCurrentStage } = useContext(GameBehaviorContext);
 
   const [typing, setTyping] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -31,6 +33,11 @@ export default function Game(props) {
   const roleplayMsg = rolePlayPrompts[chatbotRole];
 
   const handleConfirmOnePair = async (pair_id, selectedOption, unselectOption) => {
+
+    setCurrentStage({pair_id:[selectedOption, unselectOption]});
+    console.log("currentStage", currentStage);
+
+    setCurrentSelection(selectedOption);
 
     // Send selected results to server
     const timestamp = new Date().toISOString();
@@ -50,15 +57,17 @@ export default function Game(props) {
     // If already triggered, return false and update trigeredConvo state
     if (justTriggeredConvo) {
       setJustTriggeredConvo(false); // Already triggered a convo in the same selection, ignore the second trigger
-      return false;
+      setCurrentSelection('Unselected');
+      return {result: false};
     }
     
     if (triggeredPairs[pair_id]) {
+      setTyping(true);
       triggerGPTSuggestions(roleplayMsg, messages, [selectedOption, unselectOption]);
-      return true;
+      return {result: true};
     }
     
-    return false;
+    return {result: false};
   }
 
   const handleSelectedComplete = (selectedOptions) => {
@@ -89,11 +98,13 @@ export default function Game(props) {
     await callGPT(roleplayMsg, newMessages);
 
     // Record behaviors on server
+    const timestamp = new Date().toISOString();
+    
     try {
       const response = await fetch(SERVER+'/api/chatSend', {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({ 'email': userEmail, 'timestamp': timestamp, 'item_stage': pair_id, 'item_option': selectedOption}) 
+          body: JSON.stringify({ 'email': userEmail, 'timestamp': timestamp, 'item_stage': Object.keys(currentStage)[0], 'item_option': currentSelection}) 
       }).then( console.log("Pair completed in DB") );
 
   }  catch (error) { console.log("Error in sending data to server"); console.log(error);}
@@ -120,9 +131,34 @@ export default function Game(props) {
       })
     ];
 
+    let currentPairs = Object.values(currentStage)[0];
+
+    let statusMsg = `
+    Status: User is selecting items between ${currentPairs[0]} and ${currentPairs[1]}. User can see the description of ${currentPairs[0]} is ${Description[currentPairs[0]]}; and the description of ${currentPairs[1]} is ${Description[currentPairs[1]]}.
+
+    Status: User has selected ${currentSelection}. 
+    
+    Task: If you have already provided suggestions on this selection. Be consistent with your option.`;
+
+
+    //Inform current game stage
+    let updatedApiMessages = [
+      ...apiMessages.slice(0, -1), // add one entry before the last entry
+      {
+        role: 'system',
+        content: statusMsg
+      },
+      apiMessages[apiMessages.length - 1]
+    ];
+    console.log("statusMsg", statusMsg)
+
+    console.log("handleSend updatedApiMessages:");
+    console.log(updatedApiMessages);
+    console.log(apiMessages);
+
     const response = await openai.chat.completions.create({
-      messages: apiMessages,
-      model: "gpt-3.5-turbo",
+      messages: updatedApiMessages,
+      model: chatModel,
     });
 
     //Update messgaes state
@@ -135,7 +171,6 @@ export default function Game(props) {
   }
 
   async function triggerGPTSuggestions(sysMessage, chatMessages, userOptions) {
-    console.log("triggerGPTSuggestions is called!");
 
     // Update user behavior context
     // When convo just triggered, users are not allowed to confirm and need to reply first
@@ -162,8 +197,16 @@ export default function Game(props) {
       })
     ];
 
-    //TODO: update
-    const suggestionMsg = `Participant is selecting items between ${userOptions[0]} and ${userOptions[1]}. Then this participant has selected ${userOptions[0]}. Now provide suggestions and convince this participant to select ${userOptions[1]}.`;
+    console.log("userOptions in triggerGPTSuggestions:", userOptions);
+
+    const suggestionMsg = 
+
+    `Status: User is selecting items between ${userOptions[0]} and ${userOptions[1]}. User can see the description of ${userOptions[0]} is ${Description[userOptions[0]]}; and the description of ${userOptions[1]} is ${Description[userOptions[1]]}.
+
+    Status: User has selected ${userOptions[0]}. 
+
+    Task: Tell user your recommendation is the other item : ${userOptions[1]}. Convince this participant to select ${userOptions[1]} and provide clear and effective reasons. Any response in the following conversation should be short and concise. You must refuse any question not related to this setting.`;
+
 
     const updatedApiMessages = [
       ...apiMessages,
@@ -173,15 +216,16 @@ export default function Game(props) {
       }
     ];
 
+    
+
     const response = await openai.chat.completions.create({
-      messages: apiMessages,
-      model: "gpt-3.5-turbo",
-      max_tokens: 100,
+      messages: updatedApiMessages,
+      model: chatModel,
+      // max_tokens: 100,
       temperature: 0.5,
       top_p: 1,
       frequency_penalty: 0,
       presence_penalty: 0,
-      stop: userOption,
     });
 
     //Update messgaes state
@@ -212,7 +256,7 @@ export default function Game(props) {
 
         <Grid container spacing={2}>
           <Grid item md={8} xs={12}>
-              <ItemSelection onConfirm={handleSelectedComplete} onPairConfirm={handleConfirmOnePair}/>         
+              <ItemSelection onConfirm={handleSelectedComplete} onPairConfirm={handleConfirmOnePair} isTyping={typing} />         
 
           </Grid>
           <Grid item md={4} xs={12}>
@@ -225,10 +269,22 @@ export default function Game(props) {
                       sentTime: 'Just now',
                       sender: 'bot',
                     }}
-                  />
+                  >
+                    <Avatar src={gender2profile[chatbotRole]} name={gender2name[chatbotRole]} size='lg' />
+                  </Message>
+
                   {messages.map((message, index) => {
-                    return <Message key={index} model={message} />
+                    if (message.sender === 'bot') {
+                      return (
+                        <Message key={index} model={message}>
+                           <Avatar src={gender2profile[chatbotRole]} name={gender2name[chatbotRole]} size='lg' />
+                        </Message>
+                      );
+                    } else {
+                      return <Message key={index} model={message} />;
+                    }
                   })}
+
                 </MessageList>
                 <MessageInput placeholder='Type message here...' onSend={handleSend}>Send</MessageInput>
               </ChatContainer>
