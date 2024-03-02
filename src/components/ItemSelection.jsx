@@ -84,7 +84,7 @@ const questions = [
   
 
 function ItemSelection({ onConfirm, onPairConfirm, isTyping }) {
-  const { confirmAllow, currentSelection,setCurrentSelection, nextStage } = useContext(GameBehaviorContext);
+  const { confirmAllow, currentSelection, setCurrentSelection, nextStage } = useContext(GameBehaviorContext);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState({});
 
@@ -93,6 +93,7 @@ function ItemSelection({ onConfirm, onPairConfirm, isTyping }) {
       ...prevOptions,
       [currentQuestionIndex]: selectedValue,
     }));
+    setCurrentSelection(selectedValue);
   };
 
   const handleConfirmClick = async (event) => {
@@ -108,7 +109,7 @@ function ItemSelection({ onConfirm, onPairConfirm, isTyping }) {
       if (currentQuestionIndex < questions.length - 1) {
         // Move to the next question
         setCurrentQuestionIndex(currentQuestionIndex + 1);
-        setCurrentSelection('unSelected');
+        setCurrentSelection('Unselected');
         nextStage();
       } else {
         // Last question was answered, call the onConfirm prop with all selected options
@@ -156,7 +157,7 @@ function ItemSelection({ onConfirm, onPairConfirm, isTyping }) {
         ))}
       </RadioGroup>
       {confirmAllow ? (
-        <Button variant="contained" onClick={handleConfirmClick} sx={{ mt: 2 }} disabled={isTyping || currentSelection == 'unSelected'}>
+        <Button variant="contained" onClick={handleConfirmClick} sx={{ mt: 2 }} disabled={isTyping || currentSelection == 'Unselected'}>
           Confirm
         </Button>
       ) : (
