@@ -46,7 +46,7 @@ export default function Game(props) {
         const response = await fetch(SERVER+'/api/itemConfirm', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ 'email': userEmail, 'timestamp': timestamp, 'item_stage': pair_id, 'item_option': selectedOption}) 
+            body: JSON.stringify({ 'email': userEmail, 'timestamp': timestamp, 'item_stage': pair_id, 'item_option': selectedOption, 'gender': chatbotRole}) 
         }).then( console.log("Chat recorded in DB") );
 
     }  catch (error) { console.log("Error in sending data to server"); console.log(error);}
@@ -104,7 +104,7 @@ export default function Game(props) {
       const response = await fetch(SERVER+'/api/chatSend', {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({ 'email': userEmail, 'timestamp': timestamp, 'item_stage': Object.keys(currentStage)[0], 'item_option': currentSelection}) 
+          body: JSON.stringify({ 'email': userEmail, 'timestamp': timestamp, 'item_stage': Object.keys(currentStage)[0], 'item_option': currentSelection, 'gender': chatbotRole}) 
       }).then( console.log("Pair completed in DB") );
 
   }  catch (error) { console.log("Error in sending data to server"); console.log(error);}
@@ -262,7 +262,7 @@ export default function Game(props) {
           <Grid item md={4} xs={12} style={{display: 'flex', flexDirection:'column'}}>
             <MainContainer style={{ flexGrow:1, overflow:'auto' }}>
               <ChatContainer>
-                <MessageList typingIndicator={typing? <TypingIndicator content="The other one is typing..."/> : null}>
+                <MessageList style={{ overflow: 'auto', maxHeight: '50vh' }} typingIndicator={typing? <TypingIndicator content="The other one is typing..."/> : null}>
                   <Message
                     model={{
                       message: selfintro[chatbotRole],
