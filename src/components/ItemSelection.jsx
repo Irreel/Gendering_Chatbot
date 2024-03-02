@@ -84,7 +84,7 @@ const questions = [
   
 
 function ItemSelection({ onConfirm, onPairConfirm, isTyping }) {
-  const { confirmAllow, setCurrentSelection, nextStage } = useContext(GameBehaviorContext);
+  const { confirmAllow, currentSelection,setCurrentSelection, nextStage } = useContext(GameBehaviorContext);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState({});
 
@@ -156,7 +156,7 @@ function ItemSelection({ onConfirm, onPairConfirm, isTyping }) {
         ))}
       </RadioGroup>
       {confirmAllow ? (
-        <Button variant="contained" onClick={handleConfirmClick} sx={{ mt: 2 }} disabled={isTyping}>
+        <Button variant="contained" onClick={handleConfirmClick} sx={{ mt: 2 }} disabled={isTyping || currentSelection == 'unSelected'}>
           Confirm
         </Button>
       ) : (
