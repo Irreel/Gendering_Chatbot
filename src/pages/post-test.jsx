@@ -16,6 +16,7 @@ export async function postTestAction({ request }) {
       q3: data.get('q3'),
       q4: data.get('q4'),
       q5: data.get('q5'),
+      other: data.get('other')
     };
 
   const jsonData = JSON.stringify(formData);

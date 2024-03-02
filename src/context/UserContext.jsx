@@ -21,14 +21,15 @@ export const UserProvider = ({ children }) => {
     if (name !== null && email !== null) {
       setUserName(name);
       setUserEmail(email);
-      console.log("User update in Context");
 
     } 
   };
 
   const initGameSettings = () => {
     if (!userCompletedGame) {
-      setChatbotRole(randomizeGender()[0]);
+      let role = randomizeGender()[0];
+      console.log("role", role);
+      setChatbotRole(role);
       setTriggeredPairs(randomizeIdxArray());
       console.log("triggeredPair: ", triggeredPairs);
     }
