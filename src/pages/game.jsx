@@ -260,7 +260,7 @@ export default function Game(props) {
 
           </Grid>
           <Grid item md={4} xs={12} style={{display: 'flex', flexDirection:'column'}}>
-            <MainContainer style={{flexGrow:1, overflow:'auto'}}>
+            <MainContainer style={{ flexGrow:1, overflow:'auto' }}>
               <ChatContainer>
                 <MessageList typingIndicator={typing? <TypingIndicator content="The other one is typing..."/> : null}>
                   <Message

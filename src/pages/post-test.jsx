@@ -117,6 +117,19 @@ export default function Post() {
         </CardContent>
           </Card>
         ))}
+        <Card key="other" sx={{ margin: '20px 60px' , padding:'20px 30px'}}>
+          <CardContent>
+            <Typography variant="h6" component="legend" sx={{ wordWrap: 'break-word' }}>Do you have any other thoughts or questions about this study? (Optional)</Typography>
+            <br />
+            <TextField
+                    name="other"
+                    type="text"
+                    placeholder=""
+                    fullWidth
+                />
+          </CardContent>
+        </Card>
+        <br/>
         </FormControl>
         <input name='email' readOnly hidden value={ userEmail || "Error"} />
 

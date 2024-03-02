@@ -12,7 +12,7 @@ export const UserProvider = ({ children }) => {
   const [userEmail, setUserEmail] = useState(null);
   const [userCompletedGame, setUserCompletedGame] = useState(false);
   const [userCompletedPostTest, setUserCompletedPostTest] = useState(false);
-  const [chatbotRole, setChatbotRole] = useState(null);
+  const [chatbotRole, setChatbotRole] = useState(null); //"male"
   // const [triggeredPairs, setTriggeredPairs] = useState(null);
   const [triggeredPairs, setTriggeredPairs] = useState([0, 1, 0, 0, 1]); // TODO: change to null
 
